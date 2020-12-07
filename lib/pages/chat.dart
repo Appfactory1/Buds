@@ -1,3 +1,5 @@
+import 'package:chat_app/firebase/firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
@@ -6,8 +8,12 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  String uid;
+  String msg;
+
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.currentUser().then((value) => uid = value.uid);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -32,13 +38,27 @@ class _ChatState extends State<Chat> {
                   physics: BouncingScrollPhysics(),
                   //crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    sending("sent message"),
-                    recieving("receved message"),
-                    sending("sent message"),
-                    recieving("receved message"),
-                    sending("sent message"),
-                    recieving("receved message"),
-                    sending("sent message"),
+                    StreamBuilder(
+                        stream: Api("chats/onechat/text")
+                            .streamDataCollectionordered(),
+                        builder: (BuildContext context, snapshot) {
+                          return Expanded(
+                            child: ListView.builder(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return (snapshot.data.documents[index]
+                                            ['sender'] ==
+                                        uid)
+                                    ? sending(
+                                        snapshot.data.documents[index]['msg'])
+                                    : recieving(
+                                        snapshot.data.documents[index]['msg']);
+                              },
+                            ),
+                          );
+                        })
                   ],
                 ),
               ),
@@ -57,7 +77,7 @@ class _ChatState extends State<Chat> {
                     Expanded(
                       child: TextField(
                         onChanged: (value) {
-                          //Do something with the user input.
+                          msg = value;
                         },
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -68,7 +88,13 @@ class _ChatState extends State<Chat> {
                       ),
                     ),
                     FlatButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        //user = await _auth.currentUser();
+                        Api("chats/" + "onechat" + "/text").addDocument({
+                          "msg": msg,
+                          "sender": uid,
+                          "time": DateTime.now()
+                        });
                         //Implement send functionality.
                       },
                       child: Text(

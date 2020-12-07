@@ -1,5 +1,8 @@
 import 'package:chat_app/pages/home.dart';
+import 'package:chat_app/pages/signup.dart';
 import 'package:flutter/material.dart';
+
+import 'chat.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -7,6 +10,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  String email;
+  String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,12 +68,18 @@ class _LoginState extends State<Login> {
           height: 2,
         ),
         Center(
-          child: Text(
-            "Don't Have an Account ?",
-            style: TextStyle(
-                color: Colors.deepPurple[900],
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => SignUp()));
+            },
+            child: Text(
+              "Don't Have an Account ?",
+              style: TextStyle(
+                  color: Colors.deepPurple[900],
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
         ),
         SizedBox(
@@ -84,7 +96,7 @@ class _LoginState extends State<Login> {
               color: Colors.deepPurple[900],
               onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Home()));
+                    context, MaterialPageRoute(builder: (context) => Chat()));
               },
               child: Text(
                 "Log In",
