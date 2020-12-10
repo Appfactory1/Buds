@@ -43,7 +43,7 @@ class Api {
     return docRef.documentID;
   }
 
-  Future<void> updateDocument(Map data, String id) {
+  Future<void> updateDocument(Object data, String id) {
     return ref.document(id).updateData(data);
   }
 }

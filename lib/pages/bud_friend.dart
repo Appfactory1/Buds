@@ -1,5 +1,8 @@
+import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/chat.dart';
 import 'package:chat_app/pages/edit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class BudFriend extends StatefulWidget {
@@ -8,8 +11,12 @@ class BudFriend extends StatefulWidget {
 }
 
 class _BudFriendState extends State<BudFriend> {
+  final Firestore tempfb = Firestore.instance;
+  String uid;
+
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.currentUser().then((value) => uid = value.uid);
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.grey),
@@ -56,7 +63,21 @@ class _BudFriendState extends State<BudFriend> {
                     color: Colors.grey,
                   ),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      QuerySnapshot u = await tempfb
+                          .collection("chats")
+                          .where("users", whereIn: [
+                        [uid, "vbD9HHSnwzO8A81g8Dht"],
+                        [
+                          ["vbD9HHSnwzO8A81g8Dht", uid]
+                        ]
+                      ]).getDocuments();
+                      print((u.documents.length).toString() + "length");
+                      if (u.documents.length == 0) {
+                        Api("chats").addDocument({
+                          "users": [uid, "vbD9HHSnwzO8A81g8Dht"],
+                        });
+                      }
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Chat()));
                     },

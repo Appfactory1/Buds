@@ -1,5 +1,8 @@
 import 'dart:ui';
 
+import 'package:chat_app/firebase/auth.dart';
+import 'package:chat_app/firebase/firestore.dart';
+import 'package:chat_app/pages/bud_friend.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -14,10 +17,19 @@ class _AccountSettingsState extends State<AccountSettings> {
   List<Asset> images = List<Asset>();
   List<Asset> newimages = List<Asset>();
   String _error = 'No Error Dectected';
+  String university;
+  String batch;
+  String program;
+  String workPlace;
+  String designation;
+  String city;
+  String country;
+  String uid;
 
   @override
   void initState() {
     super.initState();
+    Authentication().getUid().then((value) => uid = value);
   }
 
   Widget buildGridView() {
@@ -175,10 +187,13 @@ class _AccountSettingsState extends State<AccountSettings> {
                         child: TextField(
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
-                          onSubmitted: (value) {
-                            setState(() {});
+                          // onSubmitted: (value) {
+                          //   //setState(() {});
+                          // },
+                          onChanged: (value) {
+                            print(value);
+                            university = value;
                           },
-                          onChanged: (value) => () {},
                         ),
                       ))
                     ],
@@ -197,9 +212,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
-                            setState(() {});
+                            //setState(() {});
                           },
-                          onChanged: (value) => () {},
+                          onChanged: (value) {
+                            batch = value;
+                          },
                         ),
                       ))
                     ],
@@ -218,9 +235,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
-                            setState(() {});
+                            // setState(() {});
                           },
-                          onChanged: (value) => () {},
+                          onChanged: (value) {
+                            program = value;
+                          },
                         ),
                       ))
                     ],
@@ -244,16 +263,18 @@ class _AccountSettingsState extends State<AccountSettings> {
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
-                            setState(() {});
+                            //setState(() {});
                           },
-                          onChanged: (value) => () {},
+                          onChanged: (value) {
+                            workPlace = value;
+                          },
                         ),
                       ))
                     ],
                   ),
                   Row(
                     children: [
-                      Text("Destination",
+                      Text("Designation",
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 18,
@@ -265,9 +286,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
-                            setState(() {});
+                            //setState(() {});
                           },
-                          onChanged: (value) => () {},
+                          onChanged: (value) {
+                            designation = value;
+                          },
                         ),
                       ))
                     ],
@@ -292,9 +315,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
-                            setState(() {});
+                            //setState(() {});
                           },
-                          onChanged: (value) => () {},
+                          onChanged: (value) {
+                            country = value;
+                          },
                         ),
                       ))
                     ],
@@ -313,14 +338,50 @@ class _AccountSettingsState extends State<AccountSettings> {
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
-                            setState(() {});
+                            //setState(() {});
                           },
-                          onChanged: (value) => () {},
+                          onChanged: (value) {
+                            city = value;
+                          },
                         ),
                       ))
                     ],
                   ),
                 ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 55),
+              child: Container(
+                height: 50,
+                //decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+                child: FlatButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  color: Colors.deepPurple[900],
+                  onPressed: () {
+                    print(university);
+                    Api("users").updateDocument({
+                      "university": university,
+                      "batch": batch,
+                      "program": program,
+                      "workPlace": workPlace,
+                      "designation": designation,
+                      "country": country,
+                      "city": city
+                    }, uid);
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => BudFriend()));
+                  },
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             )
           ]),
@@ -333,9 +394,11 @@ class _AccountSettingsState extends State<AccountSettings> {
 class Rows1 extends StatelessWidget {
   final String name;
   final IconData icon;
+  final TextEditingController controller;
   const Rows1({
     this.name,
     this.icon,
+    this.controller,
     Key key,
   }) : super(key: key);
 

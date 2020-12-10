@@ -15,6 +15,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   String email = "";
   String password = "";
+  final snackBar = SnackBar(content: Text('Account has been setup'));
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +126,9 @@ class _SignUpState extends State<SignUp> {
                 print('1');
                 FirebaseUser user =
                     await Authentication().signUp(email, password);
+                if (user != null) {
+                  Scaffold.of(context).showSnackBar(snackBar);
+                }
                 print('2');
                 Api("users").addDocumentById({"email": email}, user.uid);
                 print("3");

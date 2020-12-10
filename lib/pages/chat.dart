@@ -1,4 +1,5 @@
 import 'package:chat_app/firebase/firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,24 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  final Firestore tempfb = Firestore.instance;
+
   String uid;
   String msg;
+  final myController = TextEditingController();
+  QuerySnapshot u;
 
   @override
   Widget build(BuildContext context) {
     FirebaseAuth.instance.currentUser().then((value) => uid = value.uid);
+    tempfb
+        .collection("chats")
+        .where("users", whereIn: [
+          [uid, "vbD9HHSnwzO8A81g8Dht"],
+          ["vbD9HHSnwzO8A81g8Dht", uid]
+        ])
+        .getDocuments()
+        .then((value) => u = value);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -38,27 +51,32 @@ class _ChatState extends State<Chat> {
                   physics: BouncingScrollPhysics(),
                   //crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    StreamBuilder(
-                        stream: Api("chats/onechat/text")
-                            .streamDataCollectionordered(),
-                        builder: (BuildContext context, snapshot) {
-                          return Expanded(
-                            child: ListView.builder(
-                              physics: AlwaysScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return (snapshot.data.documents[index]
-                                            ['sender'] ==
-                                        uid)
-                                    ? sending(
-                                        snapshot.data.documents[index]['msg'])
-                                    : recieving(
-                                        snapshot.data.documents[index]['msg']);
-                              },
-                            ),
-                          );
-                        })
+                    u.documents.length == 0
+                        ? Container()
+                        : StreamBuilder(
+                            stream: Api("chats/" +
+                                    u.documents[0].documentID +
+                                    "/msgs")
+                                .streamDataCollectionordered(),
+                            builder: (BuildContext context, snapshot) {
+                              return Expanded(
+                                child: ListView.builder(
+                                  physics: AlwaysScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.documents.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return (snapshot.data.documents[index]
+                                                ['sender'] ==
+                                            uid)
+                                        ? sending(snapshot.data.documents[index]
+                                            ['msg'])
+                                        : recieving(snapshot
+                                            .data.documents[index]['msg']);
+                                  },
+                                ),
+                              );
+                            })
                   ],
                 ),
               ),
@@ -76,6 +94,7 @@ class _ChatState extends State<Chat> {
                   children: <Widget>[
                     Expanded(
                       child: TextField(
+                        controller: myController,
                         onChanged: (value) {
                           msg = value;
                         },
@@ -90,11 +109,21 @@ class _ChatState extends State<Chat> {
                     FlatButton(
                       onPressed: () async {
                         //user = await _auth.currentUser();
-                        Api("chats/" + "onechat" + "/text").addDocument({
-                          "msg": msg,
+                        QuerySnapshot u = await tempfb
+                            .collection("chats")
+                            .where("users", whereIn: [
+                          [uid, "vbD9HHSnwzO8A81g8Dht"],
+                          ["vbD9HHSnwzO8A81g8Dht", uid]
+                        ]).getDocuments();
+
+                        Api("chats/" + u.documents[0].documentID + "/msgs")
+                            .addDocument({
+                          "msg": myController.text,
                           "sender": uid,
                           "time": DateTime.now()
                         });
+                        myController.clear();
+
                         //Implement send functionality.
                       },
                       child: Text(
