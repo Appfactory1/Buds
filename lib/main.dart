@@ -1,5 +1,6 @@
 import 'package:chat_app/pages/account_settings.dart';
 import 'package:chat_app/pages/bud_friend.dart';
+import 'package:chat_app/pages/buds.dart';
 import 'package:chat_app/pages/login.dart';
 import 'package:chat_app/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
-          return AccountSettings();
+          return Buds(null, null);
         } else {
           return Login();
         }

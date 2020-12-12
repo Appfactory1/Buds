@@ -86,8 +86,10 @@ class _InterestState extends State<Interest> {
                         borderRadius: BorderRadius.circular(20)),
                     color: Colors.deepPurple[900],
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Buds()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Buds(null, null)));
                     },
                     child: Text(
                       "Submit",

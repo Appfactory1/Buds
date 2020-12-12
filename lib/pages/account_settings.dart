@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
+import 'package:chat_app/firebase/storage.dart';
 import 'package:chat_app/pages/bud_friend.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -17,22 +19,49 @@ class _AccountSettingsState extends State<AccountSettings> {
   List<Asset> images = List<Asset>();
   List<Asset> newimages = List<Asset>();
   String _error = 'No Error Dectected';
-  String university;
-  String batch;
-  String program;
-  String workPlace;
-  String designation;
-  String city;
-  String country;
+
+  TextEditingController batch;
+  TextEditingController program;
+  TextEditingController workPlace;
+  TextEditingController designation;
+  TextEditingController city;
+  TextEditingController country;
+
   String uid;
+  int temp = 0;
+  List<String> urls = [];
+
+  DocumentSnapshot snap;
 
   @override
   void initState() {
     super.initState();
-    Authentication().getUid().then((value) => uid = value);
+    Authentication().getUid().then((value) {
+      uid = value;
+      Api('users').getDocumentById(uid).then((val) {
+        setState(() {
+          print("1");
+          snap = val;
+        });
+      });
+    });
   }
 
+  TextEditingController university;
+
   Widget buildGridView() {
+    university = TextEditingController(
+        text: snap != null ? snap.data['university'] : '');
+    batch = TextEditingController(text: snap != null ? snap.data['batch'] : '');
+    program =
+        TextEditingController(text: snap != null ? snap.data['program'] : '');
+    workPlace =
+        TextEditingController(text: snap != null ? snap.data['workPlace'] : '');
+    designation = TextEditingController(
+        text: snap != null ? snap.data['designation'] : '');
+    country =
+        TextEditingController(text: snap != null ? snap.data['country'] : '');
+    city = TextEditingController(text: snap != null ? snap.data['city'] : '');
     return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 160),
         child: ListView.builder(
@@ -185,15 +214,18 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 40),
                         child: TextField(
+                          controller: university,
+                          decoration: InputDecoration(),
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           // onSubmitted: (value) {
                           //   //setState(() {});
                           // },
-                          onChanged: (value) {
-                            print(value);
-                            university = value;
-                          },
+
+                          // onChanged: (value) {
+                          //   print(value);
+                          //   university = value;
+                          // },
                         ),
                       ))
                     ],
@@ -209,14 +241,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 72),
                         child: TextField(
+                          controller: batch,
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
                             //setState(() {});
                           },
-                          onChanged: (value) {
-                            batch = value;
-                          },
+                          // onChanged: (value) {
+                          //   batch = value;
+                          // },
                         ),
                       ))
                     ],
@@ -232,14 +265,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 50),
                         child: TextField(
+                          controller: program,
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
                             // setState(() {});
                           },
-                          onChanged: (value) {
-                            program = value;
-                          },
+                          // onChanged: (value) {
+                          //   program = value;
+                          // },
                         ),
                       ))
                     ],
@@ -260,14 +294,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 28),
                         child: TextField(
+                          controller: workPlace,
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
                             //setState(() {});
                           },
-                          onChanged: (value) {
-                            workPlace = value;
-                          },
+                          // onChanged: (value) {
+                          //   workPlace = value;
+                          // },
                         ),
                       ))
                     ],
@@ -283,14 +318,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 27),
                         child: TextField(
+                          controller: designation,
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
                             //setState(() {});
                           },
-                          onChanged: (value) {
-                            designation = value;
-                          },
+                          // onChanged: (value) {
+                          //   designation = value;
+                          // },
                         ),
                       ))
                     ],
@@ -312,14 +348,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 54),
                         child: TextField(
+                          controller: country,
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
                             //setState(() {});
                           },
-                          onChanged: (value) {
-                            country = value;
-                          },
+                          // onChanged: (value) {
+                          //   country = value;
+                          // },
                         ),
                       ))
                     ],
@@ -335,14 +372,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 85),
                         child: TextField(
+                          controller: city,
                           selectionHeightStyle:
                               BoxHeightStyle.includeLineSpacingMiddle,
                           onSubmitted: (value) {
                             //setState(() {});
                           },
-                          onChanged: (value) {
-                            city = value;
-                          },
+                          // onChanged: (value) {
+                          //   city = value;
+                          // },
                         ),
                       ))
                     ],
@@ -362,16 +400,18 @@ class _AccountSettingsState extends State<AccountSettings> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   color: Colors.deepPurple[900],
-                  onPressed: () {
-                    print(university);
+                  onPressed: () async {
+                    urls = await addimages(images);
+
                     Api("users").updateDocument({
-                      "university": university,
-                      "batch": batch,
-                      "program": program,
-                      "workPlace": workPlace,
-                      "designation": designation,
-                      "country": country,
-                      "city": city
+                      "university": university.text,
+                      "batch": batch.text,
+                      "program": program.text,
+                      "workPlace": workPlace.text,
+                      "designation": designation.text,
+                      "country": country.text,
+                      "city": city.text,
+                      'url': urls
                     }, uid);
 
                     Navigator.push(context,
@@ -388,6 +428,17 @@ class _AccountSettingsState extends State<AccountSettings> {
         ),
       ),
     );
+  }
+
+  Future<List<String>> addimages(imgs) async {
+    List<String> url = [];
+    for (int i = 0; i < imgs.length; i++) {
+      temp += 1;
+      url.add(await StorageApi(path: "images/$temp")
+          .addImage((await imgs[i].getByteData()).buffer.asUint8List()));
+    }
+
+    return url;
   }
 }
 
