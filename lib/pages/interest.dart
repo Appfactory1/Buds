@@ -1,3 +1,5 @@
+import 'package:chat_app/firebase/auth.dart';
+import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/buds.dart';
 import 'package:chat_app/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,23 @@ class Interest extends StatefulWidget {
 }
 
 class _InterestState extends State<Interest> {
-  List<String> interests = [];
+  List interests = [];
+  String uid;
+
+  @override
+  void initState() {
+    Authentication().getUid().then((value) {
+      uid = value;
+      Api('users').getDocumentById(value).then((value) {
+        if (value.data['interest'] != null) {
+          setState(() {
+            interests = value.data['interest'];
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String interest;
@@ -86,10 +104,11 @@ class _InterestState extends State<Interest> {
                         borderRadius: BorderRadius.circular(20)),
                     color: Colors.deepPurple[900],
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Buds(null, null)));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => Buds(null, null)));
+                      Api('users').updateDocument({'interest': interests}, uid);
                     },
                     child: Text(
                       "Submit",

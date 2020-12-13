@@ -1,5 +1,10 @@
+import 'package:chat_app/firebase/auth.dart';
+import 'package:chat_app/firebase/firestore.dart';
+import 'package:chat_app/pages/buds.dart';
 import 'package:chat_app/pages/interest.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -7,6 +12,31 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Position position;
+  var addresses;
+  String uid;
+  var first;
+
+  Future<void> _getLocation() async {
+    position = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    var coordinates = Coordinates(position.latitude, position.longitude);
+    addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    first = addresses.first;
+    print(
+        ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}');
+  }
+
+  @override
+  void initState() {
+    Authentication().getUid().then((value) {
+      uid = value;
+    });
+    _getLocation().then(
+        (value) => Api('users').updateDocument({'loc': first.locality}, uid));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +67,9 @@ class _HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       BudCat(name: "Native Buddies"),
-                      BudCat(name: "Work Buddies")
+                      BudCat(
+                        name: "Work Buddies",
+                      )
                     ],
                   ),
                   SizedBox(
@@ -70,7 +102,7 @@ class BudCat extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Interest()));
+            context, MaterialPageRoute(builder: (context) => Buds(null, null)));
       },
       child: Column(children: [
         Container(

@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^0.15.5+3
   firebase_storage: ^3.1.6
   cached_network_image: ^2.4.1
+  geocoder: ^0.2.1
 
 dev_dependencies:
   flutter_test:

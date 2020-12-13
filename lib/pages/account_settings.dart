@@ -35,7 +35,6 @@ class _AccountSettingsState extends State<AccountSettings> {
 
   @override
   void initState() {
-    super.initState();
     Authentication().getUid().then((value) {
       uid = value;
       Api('users').getDocumentById(uid).then((val) {
@@ -45,6 +44,7 @@ class _AccountSettingsState extends State<AccountSettings> {
         });
       });
     });
+    super.initState();
   }
 
   TextEditingController university;

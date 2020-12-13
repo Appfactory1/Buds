@@ -22,6 +22,11 @@ class Api {
     return ref.orderBy("time").snapshots();
   }
 
+  Stream<QuerySnapshot> streamDataCollectionWithWhere(
+      String key, String condition) {
+    return ref.where(key, arrayContains: condition).snapshots();
+  }
+
   Future<DocumentSnapshot> getDocumentById(String id) {
     return ref.document(id).get();
   }
