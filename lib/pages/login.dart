@@ -1,3 +1,4 @@
+import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/pages/home.dart';
 import 'package:chat_app/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,11 +45,41 @@ class _LoginState extends State<Login> {
                   "Log In",
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
-                TextfiedCustom(
-                  name: "Email",
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white),
+                    child: TextFormField(
+                      //controller: email,
+                      decoration: InputDecoration(
+                          hintText: "email",
+                          focusedBorder: InputBorder.none,
+                          border: InputBorder.none),
+                      onChanged: (value) => email = value,
+                    ),
+                  ),
                 ),
-                TextfiedCustom(
-                  name: "Password",
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white),
+                    child: TextFormField(
+                      //controller: password,
+                      decoration: InputDecoration(
+                          hintText: "password",
+                          focusedBorder: InputBorder.none,
+                          border: InputBorder.none),
+                      onChanged: (value) => password = value,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -96,8 +127,8 @@ class _LoginState extends State<Login> {
                   borderRadius: BorderRadius.circular(20)),
               color: Colors.deepPurple[900],
               onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Chat()));
+                //
+                Authentication().logIn(email, password);
               },
               child: Text(
                 "Log In",

@@ -15,6 +15,10 @@ class Authentication {
     await _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
+  Future<void> logOut() async {
+    await _auth.signOut();
+  }
+
   Future<String> getUid() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     return user.uid;

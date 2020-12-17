@@ -101,8 +101,8 @@ class BudCat extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Buds(null, null)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Buds(null, null, "", [])));
       },
       child: Column(children: [
         Container(

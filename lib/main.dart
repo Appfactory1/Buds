@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
-          return Interest();
+          return Buds(null, null, "", []);
         } else {
           return Login();
         }

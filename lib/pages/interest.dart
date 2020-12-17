@@ -12,6 +12,15 @@ class Interest extends StatefulWidget {
 class _InterestState extends State<Interest> {
   List interests = [];
   String uid;
+  String selectedAnimal;
+  List<DropdownMenuItem> animalItems = [
+    DropdownMenuItem(
+      child: Text(
+        "some",
+      ),
+      value: "some",
+    ),
+  ];
 
   @override
   void initState() {
@@ -55,24 +64,18 @@ class _InterestState extends State<Interest> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      color: Colors.grey[300]),
-                  child: TextField(
-                    onSubmitted: (value) {
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                  child: DropdownButton(
+                    items: animalItems,
+                    onChanged: (value) {
                       setState(() {
                         interests.add(value);
                       });
-                      print(interests);
                     },
-                    // onFieldSubmitted: (value) {
-                    //   setState(() {
-                    //     interests.add(value);
-                    //   });
-                    // },
-                    onChanged: (value) => interest = value,
-                    decoration: InputDecoration(
-                        focusedBorder: InputBorder.none,
-                        border: InputBorder.none),
+                    value: selectedAnimal,
+                    isExpanded: false,
+                    hint: Text("Choose Interests"),
                   ),
                 ),
                 SizedBox(
@@ -112,6 +115,29 @@ class _InterestState extends State<Interest> {
                     },
                     child: Text(
                       "Submit",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 55),
+                child: Container(
+                  height: 50,
+                  //decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    color: Colors.deepPurple[900],
+                    onPressed: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => Buds(null, null)));
+                      Authentication().logOut();
+                    },
+                    child: Text(
+                      "Sign Out",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
