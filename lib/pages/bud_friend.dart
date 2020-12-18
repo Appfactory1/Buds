@@ -75,7 +75,7 @@ class _BudFriendState extends State<BudFriend> {
                       print((u.documents.length).toString() + "length");
                       if (u.documents.length == 0) {
                         Api("chats").addDocument({
-                          "users": [uid, "vbD9HHSnwzO8A81g8Dht"],
+                          "users": uid + "vbD9HHSnwzO8A81g8Dht",
                         });
                       }
                       Navigator.push(context,

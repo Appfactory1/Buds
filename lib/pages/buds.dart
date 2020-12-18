@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/firebase/storage.dart';
+import 'package:chat_app/pages/all_chats.dart';
 import 'package:chat_app/pages/bud_friend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,10 @@ class _BudsState extends State<Buds> {
           actions: [
             IconButton(
               icon: Icon(Icons.mail),
-              onPressed: null,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AllChats()));
+              },
               iconSize: 40,
             )
           ],
