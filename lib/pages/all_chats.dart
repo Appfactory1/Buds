@@ -3,24 +3,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AllChats extends StatefulWidget {
+  String uid;
+
+  AllChats(uid) {
+    this.uid = uid;
+  }
+
   @override
   _AllChatsState createState() => _AllChatsState();
 }
 
 class _AllChatsState extends State<AllChats> {
   @override
-  Widget build(BuildContext context) {
-    initState() {
-      Firestore.instance
-          .collection("chats")
-          .where(
-            "users",
-            isGreaterThan: "vbD9HHSnwzO8A81g8Dht",
-          )
-          .getDocuments()
-          .then((value) => print('done'));
-    }
+  initState() {
+    Firestore.instance
+        .collection("chats")
+        .where(
+          "users",
+          arrayContains: "vbD9HHSnwzO8A81g8Dht",
+        )
+        .getDocuments()
+        .then((value) => print(value.documents.length));
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         body: StreamBuilder(
             stream: Api('chats').streamDataCollection(),
@@ -29,7 +36,8 @@ class _AllChatsState extends State<AllChats> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   return Container(
-                      child: Text(snapshot.data.documents[index]['users'][1]));
+                      child: Text(
+                          snapshot.data.documents[index]['users'].toString()));
                 },
               );
             }));

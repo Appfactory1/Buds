@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
-import 'package:chat_app/firebase/storage.dart';
 import 'package:chat_app/pages/all_chats.dart';
 import 'package:chat_app/pages/bud_friend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,13 +10,17 @@ class Buds extends StatefulWidget {
   int index;
   AsyncSnapshot bud;
   String uid;
+  String uemail;
   List rej;
+  List liked;
 
-  Buds(index, bud, uid, rej) {
+  Buds(index, bud, uid, uemail, rej, liked) {
     this.index = index;
     this.bud = bud;
     this.uid = uid;
+    this.uemail = uemail;
     this.rej = rej;
+    this.liked = liked;
   }
 
   @override
@@ -25,18 +28,24 @@ class Buds extends StatefulWidget {
 }
 
 class _BudsState extends State<Buds> {
+  final Firestore tempfb = Firestore.instance;
+
   int index;
   AsyncSnapshot bud;
   final snackBar = SnackBar(content: Text('No more'));
   var _scaffoldKey = GlobalKey<ScaffoldState>();
   DocumentSnapshot snapshot;
   List rejects = [];
+  List liked = [];
   String uid;
+  String uemail;
 
   void initState() {
     print("something" + widget.uid);
     uid = widget.uid;
+    uemail = widget.uemail;
     rejects = widget.rej;
+    liked = widget.liked;
 
     if (uid == "") {
       Authentication().getUid().then((value) {
@@ -44,6 +53,47 @@ class _BudsState extends State<Buds> {
         Api('users').getDocumentById(uid).then((value) {
           if (value.data['reject'] != null) {
             rejects = value.data['reject'];
+            Authentication().auth.currentUser().then((value) {
+              uemail = value.email;
+              if (rejects
+                  .contains(widget.bud.data.documents[widget.index]['email'])) {
+                print('yeehaw');
+                if (widget.bud.data.documents.length > widget.index + 1) {
+                  Future(() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Buds(widget.index + 1,
+                                widget.bud, uid, uemail, rejects, liked)));
+                  });
+                } else {
+                  print('ah shit');
+                  //_scaffoldKey.currentState.showSnackBar(snackBar);
+                }
+              } else {
+                if (widget.bud.data.documents[widget.index]['email']
+                    .contains(uemail)) {
+                  print('yeehaw');
+                  if (widget.bud.data.documents.length > widget.index + 1) {
+                    Future(() {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Buds(widget.index + 1,
+                                  widget.bud, uid, uemail, rejects, liked)));
+                    });
+                  } else {
+                    print('ah shit');
+                    //_scaffoldKey.currentState.showSnackBar(snackBar);
+                  }
+                }
+              }
+            });
+          }
+        });
+        Api('users').getDocumentById(uid).then((value) {
+          if (value.data['liked'] != null) {
+            liked = value.data['liked'];
           }
         });
       });
@@ -55,6 +105,34 @@ class _BudsState extends State<Buds> {
       //     });
       if (rejects.contains(widget.bud.data.documents[widget.index]['email'])) {
         print('yeehaw');
+        if (widget.bud.data.documents.length > widget.index + 1) {
+          Future(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Buds(widget.index + 1, widget.bud,
+                        uid, uemail, rejects, liked)));
+          });
+        } else {
+          print('ah shit');
+          //_scaffoldKey.currentState.showSnackBar(snackBar);
+        }
+      } else {
+        if (widget.bud.data.documents[widget.index]['email'].contains(uemail)) {
+          print('yeehaw');
+          if (widget.bud.data.documents.length > widget.index + 1) {
+            Future(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Buds(widget.index + 1, widget.bud,
+                          uid, uemail, rejects, liked)));
+            });
+          } else {
+            print('ah shit');
+            //_scaffoldKey.currentState.showSnackBar(snackBar);
+          }
+        }
       }
     }
 
@@ -77,7 +155,7 @@ class _BudsState extends State<Buds> {
               icon: Icon(Icons.mail),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AllChats()));
+                    MaterialPageRoute(builder: (context) => AllChats(uid)));
               },
               iconSize: 40,
             )
@@ -136,9 +214,13 @@ class _BudsState extends State<Buds> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             GestureDetector(
+                              // reject
                               onTap: () {
-                                rejects
-                                    .add(snapshot.data.documents[0]['email']);
+                                if (!rejects.contains(
+                                    snapshot.data.documents[0]['email'])) {
+                                  rejects
+                                      .add(snapshot.data.documents[0]['email']);
+                                }
                                 Api('users')
                                     .updateDocument({'reject': rejects}, uid);
                                 if (snapshot.data.documents.length >
@@ -146,8 +228,13 @@ class _BudsState extends State<Buds> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Buds(index + 1,
-                                              snapshot, uid, rejects)));
+                                          builder: (context) => Buds(
+                                              index + 1,
+                                              snapshot,
+                                              uid,
+                                              uemail,
+                                              rejects,
+                                              liked)));
                                 }
                               },
                               child: Container(
@@ -167,14 +254,26 @@ class _BudsState extends State<Buds> {
                               width: 20,
                             ),
                             GestureDetector(
-                              onTap: () {
+                              // accept
+                              onTap: () async {
+                                Api("chats").addDocument({
+                                  "users": uid + "vbD9HHSnwzO8A81g8Dht",
+                                });
+                                liked.add(snapshot.data.documents[0]['email']);
+                                Api('users')
+                                    .updateDocument({'liked': liked}, uid);
                                 if (snapshot.data.documents.length >
                                     index + 1) {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Buds(index + 1,
-                                              snapshot, uid, rejects)));
+                                          builder: (context) => Buds(
+                                              index + 1,
+                                              snapshot,
+                                              uid,
+                                              uemail,
+                                              rejects,
+                                              liked)));
                                 }
                               },
                               child: Container(
@@ -268,16 +367,20 @@ class _BudsState extends State<Buds> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
+                          // reject
                           onTap: () {
-                            rejects.add(bud.data.documents[index]['email']);
+                            if (rejects.contains(widget
+                                .bud.data.documents[widget.index]['email'])) {
+                              rejects.add(bud.data.documents[index]['email']);
+                            }
                             Api('users')
                                 .updateDocument({'reject': rejects}, uid);
                             if (bud.data.documents.length > index + 1) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Buds(
-                                          index + 1, snapshot, uid, rejects)));
+                                      builder: (context) => Buds(index + 1, bud,
+                                          uid, uemail, rejects, liked)));
                             }
                           },
                           child: Container(
@@ -297,13 +400,20 @@ class _BudsState extends State<Buds> {
                           width: 20,
                         ),
                         GestureDetector(
-                          onTap: () {
+                          // accept
+                          onTap: () async {
+                            Api("chats").addDocument({
+                              "users": uid + "vbD9HHSnwzO8A81g8Dht",
+                            });
+                            liked.add(bud.data.documents[index]['email']);
+                            Api('users')
+                                .updateDocument({'reject': rejects}, uid);
                             if (bud.data.documents.length > index + 1) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          Buds(index + 1, bud, uid, rejects)));
+                                      builder: (context) => Buds(index + 1, bud,
+                                          uid, uemail, rejects, liked)));
                             } else {
                               _scaffoldKey.currentState.showSnackBar(snackBar);
                             }
@@ -331,7 +441,7 @@ class _BudsState extends State<Buds> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BudFriend()));
+                                    builder: (context) => AllChats(uid)));
                           },
                           iconSize: 55,
                           color: Colors.grey,

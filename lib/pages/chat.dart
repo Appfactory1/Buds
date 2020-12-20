@@ -116,6 +116,10 @@ class _ChatState extends State<Chat> {
                           ["vbD9HHSnwzO8A81g8Dht", uid]
                         ]).getDocuments();
 
+                        Api('chats').updateDocument(
+                            {'msg': myController.text, 'time': DateTime.now()},
+                            u.documents[0].documentID);
+
                         Api("chats/" + u.documents[0].documentID + "/msgs")
                             .addDocument({
                           "msg": myController.text,
