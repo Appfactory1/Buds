@@ -1,4 +1,5 @@
 import 'package:chat_app/firebase/auth.dart';
+import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/home.dart';
 import 'package:chat_app/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String email;
   String password;
+  String uid;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +130,18 @@ class _LoginState extends State<Login> {
               color: Colors.deepPurple[900],
               onPressed: () {
                 //
-                Authentication().logIn(email, password);
+                Authentication().logIn(email, password).then((value) {
+                  uid = value.uid;
+                  if (value.isEmailVerified) {
+                    Api('users')
+                        .getDataCollectionWithWhere('email', email)
+                        .then((value) {
+                      if (value.documents.length == 0) {
+                        Api("users").addDocumentById({"email": email}, uid);
+                      }
+                    });
+                  }
+                });
               },
               child: Text(
                 "Log In",

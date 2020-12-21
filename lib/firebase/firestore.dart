@@ -14,6 +14,10 @@ class Api {
     return ref.getDocuments();
   }
 
+  Future<QuerySnapshot> getDataCollectionWithWhere(field, value) {
+    return ref.where(field, isEqualTo: value).getDocuments();
+  }
+
   Stream<QuerySnapshot> streamDataCollection() {
     return ref.snapshots();
   }

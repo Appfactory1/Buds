@@ -17,8 +17,10 @@ class Authentication {
     }
   }
 
-  Future<void> logIn(email, password) async {
-    await auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<FirebaseUser> logIn(email, password) async {
+    AuthResult result =
+        await auth.signInWithEmailAndPassword(email: email, password: password);
+    return result.user;
   }
 
   Future<void> logOut() async {
