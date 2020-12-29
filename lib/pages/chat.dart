@@ -4,6 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
+  String id;
+  String uid;
+
+  Chat(String id, String uid) {
+    this.id = id;
+    this.uid = uid;
+  }
   @override
   _ChatState createState() => _ChatState();
 }
@@ -18,15 +25,6 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth.instance.currentUser().then((value) => uid = value.uid);
-    tempfb
-        .collection("chats")
-        .where("users", whereIn: [
-          [uid, "vbD9HHSnwzO8A81g8Dht"],
-          ["vbD9HHSnwzO8A81g8Dht", uid]
-        ])
-        .getDocuments()
-        .then((value) => u = value);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -51,32 +49,27 @@ class _ChatState extends State<Chat> {
                   physics: BouncingScrollPhysics(),
                   //crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    u.documents.length == 0
-                        ? Container()
-                        : StreamBuilder(
-                            stream: Api("chats/" +
-                                    u.documents[0].documentID +
-                                    "/msgs")
-                                .streamDataCollectionordered(),
-                            builder: (BuildContext context, snapshot) {
-                              return Expanded(
-                                child: ListView.builder(
-                                  physics: AlwaysScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data.documents.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return (snapshot.data.documents[index]
-                                                ['sender'] ==
-                                            uid)
-                                        ? sending(snapshot.data.documents[index]
-                                            ['msg'])
-                                        : recieving(snapshot
-                                            .data.documents[index]['msg']);
-                                  },
-                                ),
-                              );
-                            })
+                    StreamBuilder(
+                        stream: Api("chats/" + widget.id + "/msgs")
+                            .streamDataCollectionordered(),
+                        builder: (BuildContext context, snapshot) {
+                          return Expanded(
+                            child: ListView.builder(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return (snapshot.data.documents[index]
+                                            ['sender'] ==
+                                        widget.uid)
+                                    ? sending(
+                                        snapshot.data.documents[index]['msg'])
+                                    : recieving(
+                                        snapshot.data.documents[index]['msg']);
+                              },
+                            ),
+                          );
+                        })
                   ],
                 ),
               ),
@@ -109,21 +102,14 @@ class _ChatState extends State<Chat> {
                     FlatButton(
                       onPressed: () async {
                         //user = await _auth.currentUser();
-                        QuerySnapshot u = await tempfb
-                            .collection("chats")
-                            .where("users", whereIn: [
-                          [uid, "vbD9HHSnwzO8A81g8Dht"],
-                          ["vbD9HHSnwzO8A81g8Dht", uid]
-                        ]).getDocuments();
 
                         Api('chats').updateDocument(
                             {'msg': myController.text, 'time': DateTime.now()},
-                            u.documents[0].documentID);
+                            widget.id);
 
-                        Api("chats/" + u.documents[0].documentID + "/msgs")
-                            .addDocument({
+                        Api("chats/" + widget.id + "/msgs").addDocument({
                           "msg": myController.text,
-                          "sender": uid,
+                          "sender": widget.uid,
                           "time": DateTime.now()
                         });
                         myController.clear();

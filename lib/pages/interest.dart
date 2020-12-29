@@ -2,6 +2,7 @@ import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/buds.dart';
 import 'package:chat_app/pages/login.dart';
+import 'package:chat_app/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
 class Interest extends StatefulWidget {
@@ -45,6 +46,7 @@ class _InterestState extends State<Interest> {
           toolbarHeight: 70,
           backgroundColor: Colors.deepPurple[900],
         ),
+        drawer: MyDrawer(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: ListView(
@@ -120,29 +122,6 @@ class _InterestState extends State<Interest> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 55),
-                child: Container(
-                  height: 50,
-                  //decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    color: Colors.deepPurple[900],
-                    onPressed: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => Buds(null, null)));
-                      Authentication().logOut();
-                    },
-                    child: Text(
-                      "Sign Out",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ));

@@ -4,11 +4,13 @@ import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/firebase/storage.dart';
 import 'package:chat_app/pages/bud_friend.dart';
+import 'package:chat_app/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class AccountSettings extends StatefulWidget {
   @override
@@ -20,6 +22,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   List<Asset> newimages = List<Asset>();
   String _error = 'No Error Dectected';
 
+  TextEditingController uname;
   TextEditingController batch;
   TextEditingController program;
   TextEditingController workPlace;
@@ -50,18 +53,54 @@ class _AccountSettingsState extends State<AccountSettings> {
   TextEditingController university;
 
   Widget buildGridView() {
+    uname = TextEditingController(
+        text: snap != null
+            ? snap.data['uname'] == null
+                ? ''
+                : snap.data['uname']
+            : '');
     university = TextEditingController(
-        text: snap != null ? snap.data['university'] : '');
-    batch = TextEditingController(text: snap != null ? snap.data['batch'] : '');
-    program =
-        TextEditingController(text: snap != null ? snap.data['program'] : '');
-    workPlace =
-        TextEditingController(text: snap != null ? snap.data['workPlace'] : '');
+        text: snap != null
+            ? snap.data['university'] == null
+                ? ''
+                : snap.data['university']
+            : '');
+    batch = TextEditingController(
+        text: snap != null
+            ? snap.data['batch'] == null
+                ? ''
+                : snap.data['batch']
+            : '');
+    program = TextEditingController(
+        text: snap != null
+            ? snap.data['program'] == null
+                ? ''
+                : snap.data['program']
+            : '');
+    workPlace = TextEditingController(
+        text: snap != null
+            ? snap.data['workPlace'] == null
+                ? ''
+                : snap.data['workPlace']
+            : '');
     designation = TextEditingController(
-        text: snap != null ? snap.data['designation'] : '');
-    country =
-        TextEditingController(text: snap != null ? snap.data['country'] : '');
-    city = TextEditingController(text: snap != null ? snap.data['city'] : '');
+        text: snap != null
+            ? snap.data['designation'] == null
+                ? ''
+                : snap.data['designation']
+            : '');
+    country = TextEditingController(
+        text: snap != null
+            ? snap.data['country'] == null
+                ? ''
+                : snap.data['country']
+            : '');
+    city = TextEditingController(
+        text: snap != null
+            ? snap.data['city'] == null
+                ? ''
+                : snap.data['city']
+            : '');
     return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 160),
         child: ListView.builder(
@@ -151,6 +190,7 @@ class _AccountSettingsState extends State<AccountSettings> {
           toolbarHeight: 70,
           backgroundColor: Colors.deepPurple[900],
         ),
+        drawer: MyDrawer(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ListView(shrinkWrap: true, children: [
@@ -199,6 +239,38 @@ class _AccountSettingsState extends State<AccountSettings> {
                 ),
               ],
             ),
+            Rows1(name: "User Name", icon: Icons.school_rounded),
+            Padding(
+                padding: EdgeInsets.only(left: 52),
+                child: Column(children: [
+                  Row(
+                    children: [
+                      Text("Username",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                          )),
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0, left: 37),
+                        child: TextField(
+                          controller: uname,
+                          decoration: InputDecoration(),
+                          selectionHeightStyle:
+                              BoxHeightStyle.includeLineSpacingMiddle,
+                          // onSubmitted: (value) {
+                          //   //setState(() {});
+                          // },
+
+                          // onChanged: (value) {
+                          //   print(value);
+                          //   university = value;
+                          // },
+                        ),
+                      ))
+                    ],
+                  ),
+                ])),
             Rows1(name: "Education", icon: Icons.school_rounded),
             Padding(
                 padding: EdgeInsets.only(left: 52),
@@ -247,9 +319,9 @@ class _AccountSettingsState extends State<AccountSettings> {
                           onSubmitted: (value) {
                             //setState(() {});
                           },
-                          // onChanged: (value) {
-                          //   batch = value;
-                          // },
+                          onChanged: (value) {
+                            //print(uname.text);
+                          },
                         ),
                       ))
                     ],
@@ -401,9 +473,18 @@ class _AccountSettingsState extends State<AccountSettings> {
                       borderRadius: BorderRadius.circular(20)),
                   color: Colors.deepPurple[900],
                   onPressed: () async {
+                    print(uname.text +
+                        university.text +
+                        batch.text +
+                        program.text +
+                        workPlace.text +
+                        designation.text +
+                        country.text +
+                        city.text);
                     urls = await addimages(images);
 
                     Api("users").updateDocument({
+                      "uname": uname.text,
                       "university": university.text,
                       "batch": batch.text,
                       "program": program.text,
@@ -433,8 +514,8 @@ class _AccountSettingsState extends State<AccountSettings> {
   Future<List<String>> addimages(imgs) async {
     List<String> url = [];
     for (int i = 0; i < imgs.length; i++) {
-      temp += 1;
-      url.add(await StorageApi(path: "images/$temp")
+      String uuid = Uuid().v4();
+      url.add(await StorageApi(path: "images/$uuid")
           .addImage((await imgs[i].getByteData()).buffer.asUint8List()));
     }
 

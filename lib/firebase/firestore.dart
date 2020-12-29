@@ -28,7 +28,20 @@ class Api {
 
   Stream<QuerySnapshot> streamDataCollectionWithWhere(
       String key, String condition) {
-    return ref.where(key, arrayContains: condition).snapshots();
+    return ref.where(key, isGreaterThan: condition).snapshots();
+  }
+
+  Stream<QuerySnapshot> streamDataCollectionWithWhereForChats(
+      String key, String condition) {
+    return ref.where(key, isGreaterThan: condition).orderBy('time').snapshots();
+  }
+
+  Stream<QuerySnapshot> streamDataCollectionForInterest(
+      String key, List condition) {
+    return ref
+        .where(key, arrayContainsAny: condition)
+        .orderBy('time')
+        .snapshots();
   }
 
   Future<DocumentSnapshot> getDocumentById(String id) {

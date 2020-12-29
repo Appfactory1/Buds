@@ -78,8 +78,8 @@ class _BudFriendState extends State<BudFriend> {
                           "users": uid + "vbD9HHSnwzO8A81g8Dht",
                         });
                       }
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Chat()));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) => Chat()));
                     },
                     icon: Icon(Icons.mail),
                     iconSize: 60,

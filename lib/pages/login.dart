@@ -29,73 +29,99 @@ class _LoginState extends State<Login> {
           "Welcome To Buds",
           style: TextStyle(color: Colors.grey, fontSize: 30),
         )),
-        SizedBox(height: 280),
+        //SizedBox(height: 280),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 45),
-          child: Container(
-            height: 250,
-            width: 100,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-                color: Colors.deepPurple[900]),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 70,
-                ),
-                Text(
-                  "Log In",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 300,
+                  ),
+                  Container(
+                    height: 250,
+                    width: 350,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white),
-                    child: TextFormField(
-                      //controller: email,
-                      decoration: InputDecoration(
-                          hintText: "email",
-                          focusedBorder: InputBorder.none,
-                          border: InputBorder.none),
-                      onChanged: (value) => email = value,
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        color: Colors.deepPurple[900]),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 70,
+                        ),
+                        Text(
+                          "Log In",
+                          style: TextStyle(color: Colors.white, fontSize: 25),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 8),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.white),
+                            child: TextFormField(
+                              //controller: email,
+                              decoration: InputDecoration(
+                                  hintText: "email",
+                                  focusedBorder: InputBorder.none,
+                                  border: InputBorder.none),
+                              onChanged: (value) => email = value,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 8),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Colors.white),
+                            child: TextFormField(
+                              obscureText: true,
+                              //controller: password,
+                              decoration: InputDecoration(
+                                  hintText: "password",
+                                  focusedBorder: InputBorder.none,
+                                  border: InputBorder.none),
+                              onChanged: (value) => password = value,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () {
+                                Authentication().resetPassword(email);
+                              },
+                              child: Text(
+                                "Forget Password?",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white),
-                    child: TextFormField(
-                      //controller: password,
-                      decoration: InputDecoration(
-                          hintText: "password",
-                          focusedBorder: InputBorder.none,
-                          border: InputBorder.none),
-                      onChanged: (value) => password = value,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "Forget Password?",
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                )
-              ],
-            ),
+                ],
+              ),
+              Positioned(
+                  bottom: 120,
+                  right: -40,
+                  child:
+                      Image(height: 400, image: AssetImage('assets/Bean.png'))),
+              Image(height: 400, image: AssetImage('assets/illustration.png'))
+            ],
           ),
         ),
         SizedBox(
@@ -137,7 +163,8 @@ class _LoginState extends State<Login> {
                         .getDataCollectionWithWhere('email', email)
                         .then((value) {
                       if (value.documents.length == 0) {
-                        Api("users").addDocumentById({"email": email}, uid);
+                        Api("users")
+                            .addDocumentById({"email": email, "uid": uid}, uid);
                       }
                     });
                   }

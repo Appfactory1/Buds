@@ -1,4 +1,6 @@
+import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/account_settings.dart';
+import 'package:chat_app/pages/all_chats.dart';
 import 'package:chat_app/pages/bud_friend.dart';
 import 'package:chat_app/pages/buds.dart';
 import 'package:chat_app/pages/home.dart';
@@ -7,6 +9,7 @@ import 'package:chat_app/pages/login.dart';
 import 'package:chat_app/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'pages/chat.dart';
 import 'pages/login.dart';
@@ -34,8 +37,9 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.isEmailVerified) {
-            print('1');
-            return Buds(null, null, "", "", [], []);
+            print('stupid');
+            return Home();
+            //return Home();
           } else {
             print('2');
             return Login();
@@ -44,6 +48,7 @@ class MyApp extends StatelessWidget {
           print('3');
           return Login();
         }
+        //return Container();
       },
     );
   }

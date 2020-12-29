@@ -13,14 +13,20 @@ class Buds extends StatefulWidget {
   String uemail;
   List rej;
   List liked;
+  String uname;
+  String field;
+  var value;
 
-  Buds(index, bud, uid, uemail, rej, liked) {
+  Buds(index, bud, uid, uemail, rej, liked, uname, field, value) {
     this.index = index;
     this.bud = bud;
     this.uid = uid;
     this.uemail = uemail;
     this.rej = rej;
     this.liked = liked;
+    this.uname = uname;
+    this.field = field;
+    this.value = value;
   }
 
   @override
@@ -50,72 +56,141 @@ class _BudsState extends State<Buds> {
     if (uid == "") {
       Authentication().getUid().then((value) {
         uid = value;
-        Api('users').getDocumentById(uid).then((value) {
-          if (value.data['reject'] != null) {
-            rejects = value.data['reject'];
-            Authentication().auth.currentUser().then((value) {
-              uemail = value.email;
-              if (rejects
-                  .contains(widget.bud.data.documents[widget.index]['email'])) {
+        Api('users').getDocumentById(uid).then((value1) {
+          if (value1.data['reject'] != null) rejects = value1.data['reject'];
+          if (value1.data['liked'] != null) {
+            liked = value1.data['liked'];
+          }
+          Authentication().auth.currentUser().then((value2) {
+            uemail = value2.email;
+            Api('users').getDataCollection().then((value) {
+              if (value.documents[widget.index]['uid'] == uid) {
+                if (widget.bud.data.documents.length > widget.index + 1) {
+                  Future(() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Buds(
+                                widget.index + 1,
+                                null,
+                                "",
+                                "",
+                                [],
+                                [],
+                                widget.uname,
+                                widget.field,
+                                widget.value)));
+                  });
+                }
+              }
+              if (rejects.contains(value.documents[widget.index]['email']) ||
+                  liked.contains(value.documents[widget.index]['email'])) {
                 print('yeehaw');
                 if (widget.bud.data.documents.length > widget.index + 1) {
                   Future(() {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Buds(widget.index + 1,
-                                widget.bud, uid, uemail, rejects, liked)));
+                            builder: (context) => Buds(
+                                widget.index + 1,
+                                widget.bud,
+                                uid,
+                                uemail,
+                                rejects,
+                                liked,
+                                widget.uname,
+                                widget.field,
+                                widget.value)));
                   });
                 } else {
                   print('ah shit');
-                  //_scaffoldKey.currentState.showSnackBar(snackBar);
                 }
               } else {
-                if (widget.bud.data.documents[widget.index]['email']
-                    .contains(uemail)) {
+                if (value.documents[widget.index]['reject'].contains(uemail)) {
                   print('yeehaw');
                   if (widget.bud.data.documents.length > widget.index + 1) {
                     Future(() {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Buds(widget.index + 1,
-                                  widget.bud, uid, uemail, rejects, liked)));
+                              builder: (context) => Buds(
+                                  widget.index + 1,
+                                  widget.bud,
+                                  uid,
+                                  uemail,
+                                  rejects,
+                                  liked,
+                                  widget.uname,
+                                  widget.field,
+                                  widget.value)));
                     });
                   } else {
                     print('ah shit');
-                    //_scaffoldKey.currentState.showSnackBar(snackBar);
                   }
                 }
               }
             });
-          }
-        });
-        Api('users').getDocumentById(uid).then((value) {
-          if (value.data['liked'] != null) {
-            liked = value.data['liked'];
-          }
+          });
         });
       });
+      // if (true) { if (widget.bud.data.documents.length > widget.index + 1) {
+      //     Future(() {
+      //       Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (context) => Buds(
+      //                   widget.index + 1,
+      //                   widget.bud,
+      //                   uid,
+      //                   uemail,
+      //                   rejects,
+      //                   liked,
+      //                   widget.uname,
+      //                   widget.field,
+      //                   widget.value)));
+      //     });
+
     } else {
-      // Api('users').getDocumentById(uid).then((value) => {
-      //       if (value.data['rejects'] != null) {rejects = value.data['rejects']}
-      //     });
-      //       if (value.data['rejects'] != null) {rejects = value.data['rejects']}
-      //     });
-      if (rejects.contains(widget.bud.data.documents[widget.index]['email'])) {
+      if (widget.bud.data.documents['uid'] == widget.uid) {
+        if (widget.bud.data.documents.length > widget.index + 1) {
+          Future(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Buds(
+                        widget.index + 1,
+                        widget.bud,
+                        uid,
+                        uemail,
+                        rejects,
+                        liked,
+                        widget.uname,
+                        widget.field,
+                        widget.value)));
+          });
+        }
+      }
+      if (rejects.contains(widget.bud.data.documents[widget.index]['email']) ||
+          liked.contains(widget.bud.data.documents[widget.index]['email'])) {
         print('yeehaw');
         if (widget.bud.data.documents.length > widget.index + 1) {
           Future(() {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Buds(widget.index + 1, widget.bud,
-                        uid, uemail, rejects, liked)));
+                    builder: (context) => Buds(
+                        widget.index + 1,
+                        widget.bud,
+                        uid,
+                        uemail,
+                        rejects,
+                        liked,
+                        widget.uname,
+                        widget.field,
+                        widget.value)));
           });
         } else {
           print('ah shit');
-          //_scaffoldKey.currentState.showSnackBar(snackBar);
         }
       } else {
         if (widget.bud.data.documents[widget.index]['email'].contains(uemail)) {
@@ -125,12 +200,19 @@ class _BudsState extends State<Buds> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Buds(widget.index + 1, widget.bud,
-                          uid, uemail, rejects, liked)));
+                      builder: (context) => Buds(
+                          widget.index + 1,
+                          widget.bud,
+                          uid,
+                          uemail,
+                          rejects,
+                          liked,
+                          widget.uname,
+                          widget.field,
+                          widget.value)));
             });
           } else {
             print('ah shit');
-            //_scaffoldKey.currentState.showSnackBar(snackBar);
           }
         }
       }
@@ -154,8 +236,11 @@ class _BudsState extends State<Buds> {
             IconButton(
               icon: Icon(Icons.mail),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AllChats(uid)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AllChats(uid, widget.uemail, widget.uname)));
               },
               iconSize: 40,
             )
@@ -163,150 +248,211 @@ class _BudsState extends State<Buds> {
         ),
         body: bud == null
             ? StreamBuilder(
-                stream: Api('users').streamDataCollection(),
+                stream: widget.value == 'interest'
+                    ? Api('users').streamDataCollectionForInterest(
+                        widget.field, widget.value)
+                    : Api('users').streamDataCollectionWithWhere(
+                        widget.field, widget.value),
                 builder: (context, snapshot) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          height: 400,
-                          child: PageView.builder(
-                              itemCount:
-                                  snapshot.data.documents[0]['url'].length,
-                              itemBuilder: (BuildContext context, int index) {
-                                print("Bitch?");
-                                return Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius:
-                                            BorderRadius.circular(25)),
-                                    height: 400,
-                                    width: double.infinity,
-                                    child: CachedNetworkImage(
-                                      imageUrl: snapshot.data.documents[0]
-                                          ['url'][index],
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ));
-                              }),
-                        ),
-                        SizedBox(height: 25),
-                        Text(
-                          snapshot.data.documents[0]['email'],
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 20),
-                        ),
-                        Text(
-                          snapshot.data.documents[0]['designation'],
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              // reject
-                              onTap: () {
-                                if (!rejects.contains(
-                                    snapshot.data.documents[0]['email'])) {
-                                  rejects
-                                      .add(snapshot.data.documents[0]['email']);
-                                }
-                                Api('users')
-                                    .updateDocument({'reject': rejects}, uid);
-                                if (snapshot.data.documents.length >
-                                    index + 1) {
+                  print(snapshot.data.documents[index]['email'] + ' mc');
+                  print(snapshot.data.documents[index]['url'] == null);
+                  if (snapshot.data.documents.length > 0) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                              height: 400,
+                              child: snapshot.data.documents[index]['url'] ==
+                                      null
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      height: 400,
+                                      width: double.infinity,
+                                    )
+                                  : PageView.builder(
+                                      itemCount: snapshot
+                                          .data.documents[index]['url'].length,
+                                      itemBuilder:
+                                          (BuildContext context, int index1) {
+                                        print("anything123");
+                                        return Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius:
+                                                    BorderRadius.circular(25)),
+                                            height: 400,
+                                            width: double.infinity,
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  snapshot.data.documents[index]
+                                                      ['url'][index1],
+                                              fit: BoxFit.cover,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ));
+                                      })),
+                          SizedBox(height: 25),
+                          Text(
+                            snapshot.data.documents[index]['email'],
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 20),
+                          ),
+                          Text(
+                            snapshot.data.documents[index]['designation'] ==
+                                    null
+                                ? ''
+                                : snapshot.data.documents[index]['designation'],
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                // reject
+                                onTap: () {
+                                  if (!rejects.contains(snapshot
+                                      .data.documents[index]['email'])) {
+                                    rejects.add(snapshot.data.documents[index]
+                                        ['email']);
+                                  }
+                                  Api('users')
+                                      .updateDocument({'reject': rejects}, uid);
+                                  if (snapshot.data.documents.length >
+                                      index + 1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Buds(
+                                                index + 1,
+                                                snapshot,
+                                                uid,
+                                                uemail,
+                                                rejects,
+                                                liked,
+                                                widget.uname,
+                                                widget.field,
+                                                widget.value)));
+                                  }
+                                },
+                                child: Container(
+                                  height: 55,
+                                  width: 55,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(60)),
+                                  child: Icon(
+                                    Icons.clear,
+                                    color: Colors.orange,
+                                    size: 45,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              GestureDetector(
+                                // accept
+                                onTap: () async {
+                                  Firestore.instance
+                                      .collection('chats')
+                                      .where("users", whereIn: [
+                                        uid +
+                                            snapshot.data.documents[index]
+                                                ['uid']
+                                      ])
+                                      .getDocuments()
+                                      .then((value) {
+                                        if (value.documents.length == 0)
+                                          Api("chats").addDocument({
+                                            "users": uid +
+                                                snapshot.data.documents[index]
+                                                    ['uid'],
+                                            "usernames": [
+                                              (snapshot.data.documents[index]
+                                                              ['uname'] ==
+                                                          null &&
+                                                      snapshot.data.documents[
+                                                              index]['uname'] ==
+                                                          null)
+                                                  ? snapshot.data
+                                                      .documents[index]['email']
+                                                  : snapshot
+                                                          .data.documents[index]
+                                                      ['uname'],
+                                              widget.uname
+                                            ]
+                                          });
+                                      });
+                                  liked.add(
+                                      snapshot.data.documents[index]['email']);
+                                  Api('users')
+                                      .updateDocument({'liked': liked}, uid);
+                                  if (snapshot.data.documents.length >
+                                      index + 1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Buds(
+                                                index + 1,
+                                                snapshot,
+                                                uid,
+                                                uemail,
+                                                rejects,
+                                                liked,
+                                                widget.uname,
+                                                widget.field,
+                                                widget.value)));
+                                  }
+                                },
+                                child: Container(
+                                  height: 55,
+                                  width: 55,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(60)),
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 45,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                icon: Icon(Icons.settings_outlined),
+                                onPressed: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Buds(
-                                              index + 1,
-                                              snapshot,
-                                              uid,
-                                              uemail,
-                                              rejects,
-                                              liked)));
-                                }
-                              },
-                              child: Container(
-                                height: 55,
-                                width: 55,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(60)),
-                                child: Icon(
-                                  Icons.clear,
-                                  color: Colors.orange,
-                                  size: 45,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            GestureDetector(
-                              // accept
-                              onTap: () async {
-                                Api("chats").addDocument({
-                                  "users": uid + "vbD9HHSnwzO8A81g8Dht",
-                                });
-                                liked.add(snapshot.data.documents[0]['email']);
-                                Api('users')
-                                    .updateDocument({'liked': liked}, uid);
-                                if (snapshot.data.documents.length >
-                                    index + 1) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Buds(
-                                              index + 1,
-                                              snapshot,
-                                              uid,
-                                              uemail,
-                                              rejects,
-                                              liked)));
-                                }
-                              },
-                              child: Container(
-                                height: 55,
-                                width: 55,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(60)),
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                  size: 45,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                              icon: Icon(Icons.settings_outlined),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => BudFriend()));
-                              },
-                              iconSize: 55,
-                              color: Colors.grey,
-                            ))
-                      ],
-                    ),
-                  );
+                                          builder: (context) => BudFriend()));
+                                },
+                                iconSize: 55,
+                                color: Colors.grey,
+                              ))
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text('No Data'),
+                    );
+                  }
                 })
             : //when data is passed from arguement
             Padding(
@@ -330,7 +476,8 @@ class _BudsState extends State<Buds> {
                             : PageView.builder(
                                 itemCount:
                                     bud.data.documents[index]['url'].length,
-                                itemBuilder: (BuildContext context, int index) {
+                                itemBuilder:
+                                    (BuildContext context, int index1) {
                                   print("anything123");
                                   return Container(
                                       decoration: BoxDecoration(
@@ -341,7 +488,7 @@ class _BudsState extends State<Buds> {
                                       width: double.infinity,
                                       child: CachedNetworkImage(
                                         imageUrl: bud.data.documents[index]
-                                            ['url'][index],
+                                            ['url'][index1],
                                         fit: BoxFit.cover,
                                         errorWidget: (context, url, error) =>
                                             Icon(Icons.error),
@@ -357,7 +504,7 @@ class _BudsState extends State<Buds> {
                     Text(
                       bud.data.documents[index]['designation'] == null
                           ? ""
-                          : bud.data.documents[index]['email'],
+                          : bud.data.documents[index]['designation'],
                       style: TextStyle(color: Colors.grey[600], fontSize: 20),
                     ),
                     SizedBox(
@@ -379,8 +526,16 @@ class _BudsState extends State<Buds> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Buds(index + 1, bud,
-                                          uid, uemail, rejects, liked)));
+                                      builder: (context) => Buds(
+                                          index + 1,
+                                          bud,
+                                          uid,
+                                          uemail,
+                                          rejects,
+                                          liked,
+                                          widget.uname,
+                                          widget.field,
+                                          widget.value)));
                             }
                           },
                           child: Container(
@@ -402,9 +557,27 @@ class _BudsState extends State<Buds> {
                         GestureDetector(
                           // accept
                           onTap: () async {
-                            Api("chats").addDocument({
-                              "users": uid + "vbD9HHSnwzO8A81g8Dht",
-                            });
+                            Firestore.instance
+                                .collection('chats')
+                                .where("users", whereIn: [
+                                  uid + bud.data.documents[0]['uid']
+                                ])
+                                .getDocuments()
+                                .then((value) {
+                                  Api("chats").addDocument({
+                                    "users": uid + bud.data.documents[0]['uid'],
+                                    "usernames": [
+                                      (bud.data.documents[index]['uname'] ==
+                                                  null &&
+                                              bud.data.documents[index]
+                                                      ['uname'] ==
+                                                  null)
+                                          ? bud.data.documents[index]['email']
+                                          : bud.data.documents[index]['uname'],
+                                      widget.uname
+                                    ]
+                                  });
+                                });
                             liked.add(bud.data.documents[index]['email']);
                             Api('users')
                                 .updateDocument({'reject': rejects}, uid);
@@ -412,8 +585,16 @@ class _BudsState extends State<Buds> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Buds(index + 1, bud,
-                                          uid, uemail, rejects, liked)));
+                                      builder: (context) => Buds(
+                                          index + 1,
+                                          bud,
+                                          uid,
+                                          uemail,
+                                          rejects,
+                                          liked,
+                                          widget.uname,
+                                          widget.field,
+                                          widget.value)));
                             } else {
                               _scaffoldKey.currentState.showSnackBar(snackBar);
                             }
@@ -441,7 +622,8 @@ class _BudsState extends State<Buds> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AllChats(uid)));
+                                    builder: (context) => AllChats(
+                                        uid, widget.uemail, widget.uname)));
                           },
                           iconSize: 55,
                           color: Colors.grey,

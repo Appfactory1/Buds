@@ -74,6 +74,7 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         color: Colors.white),
                     child: TextFormField(
+                      obscureText: true,
                       //controller: password,
                       decoration: InputDecoration(
                           hintText: "password",
@@ -83,32 +84,12 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "Forget Password?",
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                )
               ],
             ),
           ),
         ),
         SizedBox(
           height: 2,
-        ),
-        Center(
-          child: Text(
-            "Don't Have an Account ?",
-            style: TextStyle(
-                color: Colors.deepPurple[900],
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
         ),
         SizedBox(
           height: 8,
