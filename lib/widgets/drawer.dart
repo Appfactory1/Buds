@@ -19,11 +19,17 @@ class _MyDrawerState extends State<MyDrawer> {
   void initState() {
     Authentication().getUid().then((value) {
       uid = value;
+      Api('users').getDocumentById(uid).then((value1) {
+        print(value1.data.toString());
+        setState(() {
+          email = value1.data['email'];
+          username = value1.data['uname'];
+        });
+
+        print(value1.data['email'] + value1.data['uname']);
+      });
     });
-    Api('users').getDocumentById(uid).then((value) {
-      email = value.data['email'];
-      username = value.data['uname'];
-    });
+
     super.initState();
   }
 

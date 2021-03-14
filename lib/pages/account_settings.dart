@@ -18,8 +18,11 @@ class AccountSettings extends StatefulWidget {
 }
 
 class _AccountSettingsState extends State<AccountSettings> {
-  List<Asset> images = List<Asset>();
+  List images = List();
+  List nimages = [];
+  List newurls;
   List<Asset> newimages = List<Asset>();
+
   String _error = 'No Error Dectected';
 
   TextEditingController uname;
@@ -32,7 +35,7 @@ class _AccountSettingsState extends State<AccountSettings> {
 
   String uid;
   int temp = 0;
-  List<String> urls = [];
+  List urls = [];
 
   DocumentSnapshot snap;
 
@@ -42,8 +45,67 @@ class _AccountSettingsState extends State<AccountSettings> {
       uid = value;
       Api('users').getDocumentById(uid).then((val) {
         setState(() {
-          print("1");
           snap = val;
+          snap != null
+              ? snap.data['url'] == null
+                  ? images = []
+                  : setState(() {
+                      images = snap.data['url'];
+                    })
+              : images = [];
+          uname = TextEditingController(
+              text: snap != null
+                  ? snap.data['uname'] == null
+                      ? ''
+                      : snap.data['uname']
+                  : '');
+          university = TextEditingController(
+              text: snap != null
+                  ? snap.data['university'] == null
+                      ? ''
+                      : snap.data['university']
+                  : '');
+          batch = TextEditingController(
+              text: snap != null
+                  ? snap.data['batch'] == null
+                      ? ''
+                      : snap.data['batch']
+                  : '');
+          program = TextEditingController(
+              text: snap != null
+                  ? snap.data['program'] == null
+                      ? ''
+                      : snap.data['program']
+                  : '');
+          workPlace = TextEditingController(
+              text: snap != null
+                  ? snap.data['workPlace'] == null
+                      ? ''
+                      : snap.data['workPlace']
+                  : '');
+          designation = TextEditingController(
+              text: snap != null
+                  ? snap.data['designation'] == null
+                      ? ''
+                      : snap.data['designation']
+                  : '');
+          country = TextEditingController(
+              text: snap != null
+                  ? snap.data['country'] == null
+                      ? ''
+                      : snap.data['country']
+                  : '');
+          city = TextEditingController(
+              text: snap != null
+                  ? snap.data['city'] == null
+                      ? ''
+                      : snap.data['city']
+                  : '');
+          snap != null
+              ? snap.data['url'] == null
+                  ? urls = []
+                  : urls = snap.data['url']
+              : urls = [];
         });
       });
     });
@@ -53,54 +115,6 @@ class _AccountSettingsState extends State<AccountSettings> {
   TextEditingController university;
 
   Widget buildGridView() {
-    uname = TextEditingController(
-        text: snap != null
-            ? snap.data['uname'] == null
-                ? ''
-                : snap.data['uname']
-            : '');
-    university = TextEditingController(
-        text: snap != null
-            ? snap.data['university'] == null
-                ? ''
-                : snap.data['university']
-            : '');
-    batch = TextEditingController(
-        text: snap != null
-            ? snap.data['batch'] == null
-                ? ''
-                : snap.data['batch']
-            : '');
-    program = TextEditingController(
-        text: snap != null
-            ? snap.data['program'] == null
-                ? ''
-                : snap.data['program']
-            : '');
-    workPlace = TextEditingController(
-        text: snap != null
-            ? snap.data['workPlace'] == null
-                ? ''
-                : snap.data['workPlace']
-            : '');
-    designation = TextEditingController(
-        text: snap != null
-            ? snap.data['designation'] == null
-                ? ''
-                : snap.data['designation']
-            : '');
-    country = TextEditingController(
-        text: snap != null
-            ? snap.data['country'] == null
-                ? ''
-                : snap.data['country']
-            : '');
-    city = TextEditingController(
-        text: snap != null
-            ? snap.data['city'] == null
-                ? ''
-                : snap.data['city']
-            : '');
     return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 160),
         child: ListView.builder(
@@ -108,23 +122,31 @@ class _AccountSettingsState extends State<AccountSettings> {
             itemCount: images.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
-              Asset asset = images[index];
+              var asset = images[index];
               return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6.0),
                   child: Stack(children: [
                     ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child: AssetThumb(
-                          asset: asset,
-                          width: 100,
-                          height: 150,
-                        )),
+                        child: asset is String
+                            ? Image.network(asset)
+                            : AssetThumb(
+                                //asset: asset,
+                                asset: asset,
+                                width: 100,
+                                height: 150,
+                              )),
                     Positioned(
                       top: 5,
                       right: 5,
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
+                            if (asset is String) {
+                              print(urls[index]);
+                              urls.removeAt(index);
+                              print(urls);
+                            }
                             images.removeAt(index);
                           });
                         },
@@ -147,7 +169,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   }
 
   Future<void> loadAssets() async {
-    List<Asset> resultList = List<Asset>();
+    List resultList = List();
     String error = 'No Error Dectected';
 
     try {
@@ -473,16 +495,20 @@ class _AccountSettingsState extends State<AccountSettings> {
                       borderRadius: BorderRadius.circular(20)),
                   color: Colors.deepPurple[900],
                   onPressed: () async {
-                    print(uname.text +
-                        university.text +
-                        batch.text +
-                        program.text +
-                        workPlace.text +
-                        designation.text +
-                        country.text +
-                        city.text);
-                    urls = await addimages(images);
+                    nimages = images.map((e) {
+                      if (e is String) {
+                      } else {
+                        return e;
+                      }
+                    }).toList();
+                    nimages.removeWhere((e) => e == null);
 
+                    if (nimages == null) {
+                    } else {
+                      newurls = await addimages(nimages);
+                      urls.addAll(newurls);
+                    }
+                    print(urls);
                     Api("users").updateDocument({
                       "uname": uname.text,
                       "university": university.text,
@@ -495,8 +521,8 @@ class _AccountSettingsState extends State<AccountSettings> {
                       'url': urls
                     }, uid);
 
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => BudFriend()));
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) => BudFriend()));
                   },
                   child: Text(
                     "Submit",

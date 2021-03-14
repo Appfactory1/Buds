@@ -17,9 +17,39 @@ class _InterestState extends State<Interest> {
   List<DropdownMenuItem> animalItems = [
     DropdownMenuItem(
       child: Text(
-        "some",
+        "Movies",
       ),
-      value: "some",
+      value: "Movies",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Sports",
+      ),
+      value: "Sports",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Fitness",
+      ),
+      value: "Fitness",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Party",
+      ),
+      value: "Party",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Music",
+      ),
+      value: "Music",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Adult",
+      ),
+      value: "Adult",
     ),
   ];
 

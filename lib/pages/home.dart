@@ -22,6 +22,8 @@ class _HomeState extends State<Home> {
   String university;
   String designation;
   String loc;
+  List rej;
+  List liked;
   var interests;
 
   Future<void> _getLocation() async {
@@ -38,24 +40,30 @@ class _HomeState extends State<Home> {
   void initState() {
     Authentication().getUid().then((value) {
       uid = value;
+      Api('users').getDocumentById(uid).then((value) {
+        if (value.data['uname'] == null && value.data['uname'] == '') {
+          print('kuss');
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AccountSettings()));
+        } else {
+          setState(() {
+            username = value.data['uname'];
+            university = value.data['university'];
+            designation = value.data['designation'];
+            loc = value.data['loc'];
+            interests = value.data['interest'];
+            rej = value.data['reject'];
+            liked = value['liked'];
+          });
+        }
+        print(username);
+      });
     });
     _getLocation().then(
         (value) => Api('users').updateDocument({'loc': first.locality}, uid));
     super.initState();
 
-    Api('users').getDocumentById('KOpQOBtk8xXLIVUp7RvRIVZ7agT2').then((value) {
-      if (value.data['uname'] == null && value.data['uname'] == '') {
-        print('kuss');
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AccountSettings()));
-      } else {
-        username = value.data['name'];
-        university = value.data['university'];
-        designation = value.data['designation'];
-        loc = value.data['loc'];
-        interests = value.data['interest'];
-      }
-    });
+    //print(username);
   }
 
   @override
@@ -89,16 +97,20 @@ class _HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       BudCat(
-                        name: "Native Buddies",
+                        name: "Native Buds",
                         uname: username,
                         field: "loc",
                         value: loc,
+                        rej: rej,
+                        liked: liked,
                       ),
                       BudCat(
-                        name: "Work Buddies",
+                        name: "Professional Buds",
                         uname: username,
                         field: "designation",
                         value: designation,
+                        rej: rej,
+                        liked: liked,
                       )
                     ],
                   ),
@@ -109,16 +121,20 @@ class _HomeState extends State<Home> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       BudCat(
-                        name: "Uni/College Buddies",
+                        name: "College Buds",
                         uname: username,
                         field: "university",
                         value: university,
+                        rej: rej,
+                        liked: liked,
                       ),
                       BudCat(
-                        name: "Interest Buddies",
+                        name: "Interest Buds",
                         uname: username,
                         field: "interest",
                         value: interests,
+                        rej: rej,
+                        liked: liked,
                       )
                     ],
                   )
@@ -134,11 +150,16 @@ class BudCat extends StatelessWidget {
   final String name;
   final String uname;
   final String field;
+  final List rej;
+  final List liked;
   final value;
+
   const BudCat({
     this.uname,
     this.field,
     this.value,
+    this.rej,
+    this.liked,
     this.name,
     Key key,
   }) : super(key: key);
@@ -147,11 +168,12 @@ class BudCat extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print(uname);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    Buds(0, null, "", "", [], [], uname, field, value)));
+                    Buds(0, null, "", "", rej, liked, uname, field, value)));
       },
       child: Column(children: [
         Container(

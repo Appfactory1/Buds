@@ -28,12 +28,13 @@ class Api {
 
   Stream<QuerySnapshot> streamDataCollectionWithWhere(
       String key, String condition) {
-    return ref.where(key, isGreaterThan: condition).snapshots();
+    return ref.where(key, isEqualTo: condition).snapshots();
   }
 
   Stream<QuerySnapshot> streamDataCollectionWithWhereForChats(
       String key, String condition) {
-    return ref.where(key, isGreaterThan: condition).orderBy('time').snapshots();
+    // add sort by time
+    return ref.where(key, isGreaterThan: condition).snapshots();
   }
 
   Stream<QuerySnapshot> streamDataCollectionForInterest(
