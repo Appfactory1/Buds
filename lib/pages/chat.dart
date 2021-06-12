@@ -1,4 +1,5 @@
 import 'package:chat_app/firebase/firestore.dart';
+import 'package:chat_app/pages/chatProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,19 @@ import 'package:flutter/material.dart';
 class Chat extends StatefulWidget {
   String id;
   String uid;
+  List name;
+  String email;
+  String uname;
+  List uids;
 
-  Chat(String id, String uid) {
+  Chat(
+      String id, String uid, List name, String email, String uname, List uids) {
     this.id = id;
     this.uid = uid;
+    this.name = name;
+    this.email = email;
+    this.uname = uname;
+    this.uids = uids;
   }
   @override
   _ChatState createState() => _ChatState();
@@ -22,12 +32,30 @@ class _ChatState extends State<Chat> {
   String msg;
   final myController = TextEditingController();
   QuerySnapshot u;
+  List _list;
+  List _listuid;
 
   @override
   Widget build(BuildContext context) {
+    _list = widget.name;
+    _list.remove(widget.email);
+    _list.remove(widget.uname);
+
+    _listuid = widget.uids;
+    _listuid.remove(widget.uid);
+    print(_listuid[0]);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          title: GestureDetector(
+              onTap: () {
+                print(_listuid[0]);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfileChat(_listuid[0])));
+              },
+              child: Text(_list[0])),
           iconTheme: IconThemeData(color: Colors.white),
           toolbarHeight: 70,
           backgroundColor: Colors.deepPurple[900],
@@ -53,22 +81,29 @@ class _ChatState extends State<Chat> {
                         stream: Api("chats/" + widget.id + "/msgs")
                             .streamDataCollectionordered(),
                         builder: (BuildContext context, snapshot) {
-                          return Expanded(
-                            child: ListView.builder(
-                              physics: AlwaysScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return (snapshot.data.documents[index]
-                                            ['sender'] ==
-                                        widget.uid)
-                                    ? sending(
-                                        snapshot.data.documents[index]['msg'])
-                                    : recieving(
-                                        snapshot.data.documents[index]['msg']);
-                              },
-                            ),
-                          );
+                          return snapshot.data != null
+                              ?
+                              // ? Expanded(
+                              //     child:
+                              ListView.builder(
+                                  physics: BouncingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.documents.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return snapshot.data.documents == null
+                                        ? Container()
+                                        : (snapshot.data.documents[index]
+                                                    ['sender'] ==
+                                                widget.uid)
+                                            ? sending(snapshot
+                                                .data.documents[index]['msg'])
+                                            : recieving(snapshot
+                                                .data.documents[index]['msg']);
+                                  },
+                                )
+                              // )
+                              : Container();
                         })
                   ],
                 ),

@@ -44,15 +44,15 @@ class _EditState extends State<Edit> {
               SizedBox(
                 height: 5,
               ),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AccountSettings()));
-                  },
-                  child: Rows(
-                      name: "Profile Setting", icon: Icons.settings_outlined)),
+              // GestureDetector(
+              //     onTap: () {
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => AccountSettings()));
+              //     },
+              // child: Rows(
+              //     name: "Profile Setting", icon: Icons.settings_outlined)),
               GestureDetector(
                   onTap: () {
                     Navigator.push(context,

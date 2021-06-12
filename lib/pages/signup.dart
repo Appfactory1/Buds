@@ -15,102 +15,131 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   String email = "";
   String password = "";
-  bool visible = false;
+  bool visible = true;
+  double height;
+  double width;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final snackBar = SnackBar(content: Text('Account has been setup'));
+  final snackBar = SnackBar(
+      content:
+          Text('Account has been setup, verify your email before logging in'));
 
   @override
   Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height / 797.714;
+    width = MediaQuery.of(context).size.width / 411.4266;
     return Scaffold(
         key: _scaffoldKey,
         body: ListView(
           physics: BouncingScrollPhysics(),
           children: [
-            SizedBox(height: 35),
+            SizedBox(height: height * 35),
             Center(
                 child: Text(
               "Welcome To Buds",
-              style: TextStyle(color: Colors.grey, fontSize: 30),
+              style: TextStyle(color: Colors.grey, fontSize: height * 30),
             )),
-            SizedBox(height: 280),
+            //SizedBox(height: 280),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 45),
-              child: Container(
-                height: 250,
-                width: 100,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    color: Colors.deepPurple[900]),
-                child: Column(
+              padding: EdgeInsets.symmetric(horizontal: (45.0 * width)),
+              child: Stack(children: [
+                Column(
                   children: [
-                    SizedBox(
-                      height: 70,
+                    Container(
+                      height: height * 300,
                     ),
-                    Text(
-                      "Sign Up",
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 8),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Colors.white),
-                        child: TextFormField(
-                          //controller: email,
-                          decoration: InputDecoration(
-                              hintText: "email",
-                              focusedBorder: InputBorder.none,
-                              border: InputBorder.none),
-                          onChanged: (value) => email = value,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 8),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Colors.white),
-                        child: TextFormField(
-                          obscureText: visible,
-                          //controller: password,
-                          decoration: InputDecoration(
-                              hintText: "Password",
-                              focusedBorder: InputBorder.none,
-                              border: InputBorder.none,
-                              suffixIcon: IconButton(
-                                icon: Icon(visible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                                onPressed: () {
-                                  setState(() {
-                                    visible = !visible;
-                                  });
-                                },
-                              )),
-                          onChanged: (value) => password = value,
-                        ),
+                    Container(
+                      height: height * 250,
+                      width: width * 350,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                          color: Colors.deepPurple[900]),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: height * 70,
+                          ),
+                          Text(
+                            "Sign Up",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: height * 25),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: width * 25, vertical: height * 8),
+                            child: Container(
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: width * 10),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.white),
+                              child: TextFormField(
+                                //controller: email,
+                                decoration: InputDecoration(
+                                    hintText: "email",
+                                    focusedBorder: InputBorder.none,
+                                    border: InputBorder.none),
+                                onChanged: (value) => email = value,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: width * 25, vertical: height * 8),
+                            child: Container(
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: width * 10),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.white),
+                              child: TextFormField(
+                                obscureText: visible,
+                                //controller: password,
+                                decoration: InputDecoration(
+                                    hintText: "Password",
+                                    focusedBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: Icon(visible
+                                          ? Icons.visibility_off
+                                          : Icons.visibility),
+                                      onPressed: () {
+                                        setState(() {
+                                          visible = !visible;
+                                        });
+                                      },
+                                    )),
+                                onChanged: (value) => password = value,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
+                Positioned(
+                    bottom: height * 120,
+                    right: -width * 40,
+                    child: Image(
+                        height: height * 400,
+                        image: AssetImage('assets/Bean.png'))),
+                Image(
+                    height: height * 400,
+                    image: AssetImage('assets/illustration.png'))
+              ]),
             ),
             SizedBox(
-              height: 2,
+              height: height * 2,
             ),
             SizedBox(
-              height: 8,
+              height: height * 8,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 55),
+              padding: EdgeInsets.symmetric(horizontal: width * 55),
               child: Container(
-                height: 50,
+                height: height * 50,
                 //decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
                 child: FlatButton(
                   shape: RoundedRectangleBorder(
@@ -120,8 +149,9 @@ class _SignUpState extends State<SignUp> {
                     print('1');
                     Authentication().signUp(email, password).then((user) {
                       if (user != null) {
-                        _scaffoldKey.currentState.showSnackBar(
-                            SnackBar(content: Text('Account has been setup')));
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                                'Account has been setup, verify your email before logging in')));
                       }
                       print('2');
                       Api("users").addDocumentById({"email": email}, user.uid);
@@ -150,9 +180,10 @@ class _SignUpState extends State<SignUp> {
 
   Widget textfiedCustom({controller, name}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+      padding:
+          EdgeInsets.symmetric(horizontal: width * 25, vertical: height * 8),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: width * 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: Colors.white),

@@ -41,10 +41,11 @@ class _HomeState extends State<Home> {
     Authentication().getUid().then((value) {
       uid = value;
       Api('users').getDocumentById(uid).then((value) {
-        if (value.data['uname'] == null && value.data['uname'] == '') {
+        print(value.data['uname']);
+        if (value.data['uname'] == null || value.data['uname'] == '') {
           print('kuss');
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AccountSettings()));
+              MaterialPageRoute(builder: (context) => AccountSettings("", "")));
         } else {
           setState(() {
             username = value.data['uname'];
@@ -53,7 +54,7 @@ class _HomeState extends State<Home> {
             loc = value.data['loc'];
             interests = value.data['interest'];
             rej = value.data['reject'];
-            liked = value['liked'];
+            liked = value.data['liked'];
           });
         }
         print(username);
@@ -90,56 +91,62 @@ class _HomeState extends State<Home> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                //crossAxisAlignment: ,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      BudCat(
-                        name: "Native Buds",
-                        uname: username,
-                        field: "loc",
-                        value: loc,
-                        rej: rej,
-                        liked: liked,
+              child: username == null
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: 'Linear progress indicator',
                       ),
-                      BudCat(
-                        name: "Professional Buds",
-                        uname: username,
-                        field: "designation",
-                        value: designation,
-                        rej: rej,
-                        liked: liked,
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      BudCat(
-                        name: "College Buds",
-                        uname: username,
-                        field: "university",
-                        value: university,
-                        rej: rej,
-                        liked: liked,
-                      ),
-                      BudCat(
-                        name: "Interest Buds",
-                        uname: username,
-                        field: "interest",
-                        value: interests,
-                        rej: rej,
-                        liked: liked,
-                      )
-                    ],
-                  )
-                ],
-              ),
+                    )
+                  : Column(
+                      //crossAxisAlignment: ,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            BudCat(
+                                name: "Native Buds",
+                                uname: username,
+                                field: "loc",
+                                value: loc,
+                                rej: rej,
+                                liked: liked,
+                                asset: 'assets/location.png'),
+                            BudCat(
+                                name: "Professional Buds",
+                                uname: username,
+                                field: "designation",
+                                value: designation,
+                                rej: rej,
+                                liked: liked,
+                                asset: 'assets/work.png')
+                          ],
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            BudCat(
+                                name: "College Buds",
+                                uname: username,
+                                field: "university",
+                                value: university,
+                                rej: rej,
+                                liked: liked,
+                                asset: 'assets/uni.png'),
+                            BudCat(
+                                name: "Interest Buds",
+                                uname: username,
+                                field: "interest",
+                                value: interests,
+                                rej: rej,
+                                liked: liked,
+                                asset: 'assets/minded.png')
+                          ],
+                        )
+                      ],
+                    ),
             )
           ],
         ));
@@ -152,6 +159,7 @@ class BudCat extends StatelessWidget {
   final String field;
   final List rej;
   final List liked;
+  final String asset;
   final value;
 
   const BudCat({
@@ -161,6 +169,7 @@ class BudCat extends StatelessWidget {
     this.rej,
     this.liked,
     this.name,
+    this.asset,
     Key key,
   }) : super(key: key);
 
@@ -177,6 +186,10 @@ class BudCat extends StatelessWidget {
       },
       child: Column(children: [
         Container(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image(image: AssetImage(asset)),
+          ),
           height: 80,
           width: 80,
           decoration: BoxDecoration(

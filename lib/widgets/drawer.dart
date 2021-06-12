@@ -14,19 +14,23 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   String email = '';
   String username = '';
+  String univesity = '';
+  String country = '';
   String uid;
   @override
   void initState() {
     Authentication().getUid().then((value) {
       uid = value;
       Api('users').getDocumentById(uid).then((value1) {
-        print(value1.data.toString());
         setState(() {
           email = value1.data['email'];
-          username = value1.data['uname'];
+          univesity = value1.data['university'] == null
+              ? ''
+              : value1.data['university'];
+          country =
+              value1.data['country'] == null ? '' : value1.data['country'];
+          username = value1.data['uname'] == null ? '' : value1.data['uname'];
         });
-
-        print(value1.data['email'] + value1.data['uname']);
       });
     });
 
@@ -69,8 +73,11 @@ class _MyDrawerState extends State<MyDrawer> {
             title: Text("Account Settings"),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AccountSettings()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AccountSettings(univesity, country)));
             },
           ),
           Divider(
@@ -80,11 +87,13 @@ class _MyDrawerState extends State<MyDrawer> {
           ListTile(
             title: Text("Chats"),
             onTap: () {
-              Navigator.of(context).pop();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AllChats(uid, email, username)));
+              if (!(username == "" && email == "")) {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AllChats(uid, email, username)));
+              }
             },
           ),
           SizedBox(

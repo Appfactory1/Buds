@@ -3,6 +3,7 @@ import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/all_chats.dart';
 import 'package:chat_app/pages/bud_friend.dart';
+import 'package:chat_app/pages/extra.dart';
 import 'package:chat_app/pages/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -51,8 +52,8 @@ class _BudsState extends State<Buds> {
     print(widget.uname);
     uid = widget.uid;
     uemail = widget.uemail;
-    rejects = widget.rej;
-    liked = widget.liked;
+    rejects = widget.rej == null ? [] : widget.rej;
+    liked = widget.liked == null ? [] : widget.liked;
     index = (widget.index > 0) ? widget.index : 0;
     print(liked);
 
@@ -159,14 +160,14 @@ class _BudsState extends State<Buds> {
     // else {
     if (widget.bud != null) {
       if (widget.bud.data != null) {
-        if (widget.bud.data.documents[widget.index]['uid'] == widget.uid) {
-          if (widget.bud.data.documents.length > widget.index + 1) {
+        if (widget.bud.data.documents[index]['uid'] == widget.uid) {
+          if (widget.bud.data.documents.length > index + 1) {
             Future(() {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Buds(
-                          widget.index + 1,
+                          index + 1,
                           widget.bud,
                           uid,
                           uemail,
@@ -180,19 +181,17 @@ class _BudsState extends State<Buds> {
         }
 
         if ((rejects != null &&
-                rejects.contains(
-                    widget.bud.data.documents[widget.index]['email'])) ||
+                rejects.contains(widget.bud.data.documents[index]['email'])) ||
             (liked != null &&
-                liked.contains(
-                    widget.bud.data.documents[widget.index]['email']))) {
+                liked.contains(widget.bud.data.documents[index]['email']))) {
           print('yeehaw');
-          if (widget.bud.data.documents.length > widget.index + 1) {
+          if (widget.bud.data.documents.length > index + 1) {
             Future(() {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Buds(
-                          widget.index + 1,
+                          index + 1,
                           widget.bud,
                           uid,
                           uemail,
@@ -206,17 +205,16 @@ class _BudsState extends State<Buds> {
             print('ah shit');
           }
         } else {
-          if (widget.bud.data.documents[widget.index]['reject'] != null &&
-              widget.bud.data.documents[widget.index]['reject']
-                  .contains(uemail)) {
+          if (widget.bud.data.documents[index]['reject'] != null &&
+              widget.bud.data.documents[index]['reject'].contains(uemail)) {
             // //       print('yeehaw');
-            if (widget.bud.data.documents.length > widget.index + 1) {
+            if (widget.bud.data.documents.length > index + 1) {
               Future(() {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => Buds(
-                            widget.index + 1,
+                            index + 1,
                             widget.bud,
                             uid,
                             uemail,
@@ -240,7 +238,6 @@ class _BudsState extends State<Buds> {
 
   @override
   Widget build(BuildContext context) {
-    index = widget.index == null ? 0 : widget.index;
     bud = widget.bud == null ? null : widget.bud;
 
     return WillPopScope(
@@ -355,9 +352,10 @@ class _BudsState extends State<Buds> {
                                         .data.documents[index]['email'])) {
                                       rejects.add(snapshot.data.documents[index]
                                           ['email']);
+
+                                      Api('users').updateDocument(
+                                          {'reject': rejects}, uid);
                                     }
-                                    Api('users').updateDocument(
-                                        {'reject': rejects}, uid);
                                     if (snapshot.data.documents.length >
                                         index + 1) {
                                       Navigator.push(
@@ -373,6 +371,9 @@ class _BudsState extends State<Buds> {
                                                   widget.uname,
                                                   widget.field,
                                                   widget.value)));
+                                    } else {
+                                      _scaffoldKey.currentState
+                                          .showSnackBar(snackBar);
                                     }
                                   },
                                   child: Container(
@@ -394,43 +395,105 @@ class _BudsState extends State<Buds> {
                                 ),
                                 GestureDetector(
                                   // accept
+                                  // onTap: () async {
+                                  //   Firestore.instance
+                                  //       .collection('chats')
+                                  //       .where("users", whereIn: [
+                                  //         uid +
+                                  //             snapshot.data.documents[index]
+                                  //                 ['uid']
+                                  //       ])
+                                  //       .getDocuments()
+                                  //       .then((value) {
+                                  //         if (value.documents.length == 0)
+                                  //           Api("chats").addDocument({
+                                  //             "users": uid +
+                                  //                 snapshot.data.documents[index]
+                                  //                     ['uid'],
+                                  //             "usernames": [
+                                  //               (snapshot.data.documents[index]
+                                  //                               ['uname'] ==
+                                  //                           null &&
+                                  //                       snapshot.data.documents[
+                                  //                                   index]
+                                  //                               ['uname'] ==
+                                  //                           null)
+                                  //                   ? snapshot.data
+                                  //                           .documents[index]
+                                  //                       ['email']
+                                  //                   : snapshot.data
+                                  //                           .documents[index]
+                                  //                       ['uname'],
+                                  //               widget.uname
+                                  //             ]
+                                  //           });
+                                  //       });
+                                  //   liked.add(snapshot.data.documents[index]
+                                  //       ['email']);
+                                  //   Api('users')
+                                  //       .updateDocument({'liked': liked}, uid);
+                                  //   if (snapshot.data.documents.length >
+                                  //       index + 1) {
+                                  //     Navigator.push(
+                                  //         context,
+                                  //         MaterialPageRoute(
+                                  //             builder: (context) => Buds(
+                                  //                 index + 1,
+                                  //                 snapshot,
+                                  //                 uid,
+                                  //                 uemail,
+                                  //                 rejects,
+                                  //                 liked,
+                                  //                 widget.uname,
+                                  //                 widget.field,
+                                  //                 widget.value)));
+                                  //   }
+                                  // },
                                   onTap: () async {
-                                    Firestore.instance
-                                        .collection('chats')
-                                        .where("users", whereIn: [
-                                          uid +
-                                              snapshot.data.documents[index]
-                                                  ['uid']
-                                        ])
-                                        .getDocuments()
-                                        .then((value) {
-                                          if (value.documents.length == 0)
-                                            Api("chats").addDocument({
-                                              "users": uid +
+                                    // Firestore.instance
+                                    //     .collection('chats')
+                                    //     .where("users", whereIn: [
+                                    //       uid + bud.data.documents[0]['uid']
+                                    //     ])
+                                    //     .getDocuments()
+                                    //     .then((value) {
+                                    if ((!liked.contains(snapshot
+                                            .data.documents[index]['email'])) &&
+                                        uid !=
+                                            snapshot.data.documents[index]
+                                                ['uid'] &&
+                                        (bud.data.documents[index]['liked'] ==
+                                                null ||
+                                            !snapshot
+                                                .data.documents[index]['liked']
+                                                .contains(widget.uemail))) {
+                                      Api("chats").addDocument({
+                                        "users": [
+                                          uid,
+                                          snapshot.data.documents[index]['uid']
+                                        ],
+                                        "usernames": [
+                                          (snapshot.data.documents[index]
+                                                          ['uname'] ==
+                                                      null ||
                                                   snapshot.data.documents[index]
-                                                      ['uid'],
-                                              "usernames": [
-                                                (snapshot.data.documents[index]
-                                                                ['uname'] ==
-                                                            null &&
-                                                        snapshot.data.documents[
-                                                                    index]
-                                                                ['uname'] ==
-                                                            null)
-                                                    ? snapshot.data
-                                                            .documents[index]
-                                                        ['email']
-                                                    : snapshot.data
-                                                            .documents[index]
-                                                        ['uname'],
-                                                widget.uname
-                                              ]
-                                            });
-                                        });
-                                    liked.add(snapshot.data.documents[index]
-                                        ['email']);
-                                    Api('users')
-                                        .updateDocument({'liked': liked}, uid);
+                                                          ['uname'] ==
+                                                      "")
+                                              ? snapshot.data.documents[index]
+                                                  ['email']
+                                              : snapshot.data.documents[index]
+                                                  ['uname'],
+                                          widget.uname
+                                        ],
+                                        "time": DateTime.now()
+                                      });
+                                      // });
+                                      liked.add(snapshot.data.documents[index]
+                                          ['email']);
+                                      Api('users').updateDocument(
+                                          {'liked': liked}, uid);
+                                    }
+                                    print("some");
                                     if (snapshot.data.documents.length >
                                         index + 1) {
                                       Navigator.push(
@@ -446,6 +509,9 @@ class _BudsState extends State<Buds> {
                                                   widget.uname,
                                                   widget.field,
                                                   widget.value)));
+                                    } else {
+                                      _scaffoldKey.currentState
+                                          .showSnackBar(snackBar);
                                     }
                                   },
                                   child: Container(
@@ -472,7 +538,8 @@ class _BudsState extends State<Buds> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => BudFriend()));
+                                            builder: (context) =>
+                                                Extra())); //BudFriend()));
                                   },
                                   iconSize: 55,
                                   color: Colors.grey,
@@ -548,12 +615,13 @@ class _BudsState extends State<Buds> {
                           GestureDetector(
                             // reject
                             onTap: () {
-                              if (!rejects.contains(widget
-                                  .bud.data.documents[widget.index]['email'])) {
+                              if (!rejects.contains(
+                                  widget.bud.data.documents[index]['email'])) {
                                 rejects.add(bud.data.documents[index]['email']);
+
+                                Api('users')
+                                    .updateDocument({'reject': rejects}, uid);
                               }
-                              Api('users')
-                                  .updateDocument({'reject': rejects}, uid);
                               if (bud.data.documents.length > index + 1) {
                                 Navigator.push(
                                     context,
@@ -568,6 +636,9 @@ class _BudsState extends State<Buds> {
                                             widget.uname,
                                             widget.field,
                                             widget.value)));
+                              } else {
+                                _scaffoldKey.currentState
+                                    .showSnackBar(snackBar);
                               }
                             },
                             child: Container(
@@ -596,21 +667,34 @@ class _BudsState extends State<Buds> {
                               //     ])
                               //     .getDocuments()
                               //     .then((value) {
-                              Api("chats").addDocument({
-                                "users": uid + bud.data.documents[0]['uid'],
-                                "usernames": [
-                                  (bud.data.documents[index]['uname'] == null ||
-                                          bud.data.documents[index]['uname'] ==
-                                              "")
-                                      ? bud.data.documents[index]['email']
-                                      : bud.data.documents[index]['uname'],
-                                  widget.uname
-                                ]
-                              });
-                              // });
-                              liked.add(bud.data.documents[index]['email']);
-                              Api('users')
-                                  .updateDocument({'reject': rejects}, uid);
+                              if ((!liked.contains(
+                                      bud.data.documents[index]['email'])) &&
+                                  uid != bud.data.documents[index]['uid'] &&
+                                  (bud.data.documents[index]['liked'] == null ||
+                                      bud.data.documents[index]['liked']
+                                          .contains(widget.uemail))) {
+                                Api("chats").addDocument({
+                                  "users": [
+                                    uid,
+                                    bud.data.documents[index]['uid']
+                                  ],
+                                  "usernames": [
+                                    (bud.data.documents[index]['uname'] ==
+                                                null ||
+                                            bud.data.documents[index]
+                                                    ['uname'] ==
+                                                "")
+                                        ? bud.data.documents[index]['email']
+                                        : bud.data.documents[index]['uname'],
+                                    widget.uname
+                                  ],
+                                  "time": DateTime.now()
+                                });
+                                // });
+                                liked.add(bud.data.documents[index]['email']);
+                                Api('users')
+                                    .updateDocument({'liked': liked}, uid);
+                              }
                               if (bud.data.documents.length > index + 1) {
                                 Navigator.push(
                                     context,

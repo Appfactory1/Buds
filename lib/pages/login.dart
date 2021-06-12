@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   String uid;
   double height;
   double width;
-  bool visible = false;
+  bool visible = true;
   final snackBar = SnackBar(content: Text('Email or password is incorrect'));
 
   @override
@@ -103,8 +103,8 @@ class _LoginState extends State<Login> {
                                       border: InputBorder.none,
                                       suffixIcon: IconButton(
                                         icon: Icon(visible
-                                            ? Icons.visibility
-                                            : Icons.visibility_off),
+                                            ? Icons.visibility_off
+                                            : Icons.visibility),
                                         onPressed: () {
                                           setState(() {
                                             visible = !visible;
@@ -123,6 +123,10 @@ class _LoginState extends State<Login> {
                                 child: GestureDetector(
                                   onTap: () {
                                     Authentication().resetPassword(email);
+                                    _scaffoldKey.currentState.showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'We have sent an email to you.')));
                                   },
                                   child: Text(
                                     "Forgot Password?",

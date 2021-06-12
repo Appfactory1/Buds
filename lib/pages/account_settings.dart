@@ -4,6 +4,9 @@ import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/firebase/storage.dart';
 import 'package:chat_app/pages/bud_friend.dart';
+import 'package:chat_app/pages/contriesList.dart';
+import 'package:chat_app/pages/home.dart';
+import 'package:chat_app/pages/universitiesList.dart';
 import 'package:chat_app/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +14,17 @@ import 'dart:async';
 
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dropdownfield/dropdownfield.dart';
 
 class AccountSettings extends StatefulWidget {
+  String uni_id;
+  String cou_id;
+
+  AccountSettings(uni_id, cou_id) {
+    this.uni_id = uni_id;
+    this.cou_id = cou_id;
+  }
+
   @override
   _AccountSettingsState createState() => new _AccountSettingsState();
 }
@@ -37,6 +49,10 @@ class _AccountSettingsState extends State<AccountSettings> {
   int temp = 0;
   List urls = [];
 
+  List<String> univesities = unis;
+  List<String> countries = coun;
+  final TextEditingController _controller = new TextEditingController();
+
   DocumentSnapshot snap;
 
   @override
@@ -59,12 +75,20 @@ class _AccountSettingsState extends State<AccountSettings> {
                       ? ''
                       : snap.data['uname']
                   : '');
-          university = TextEditingController(
-              text: snap != null
-                  ? snap.data['university'] == null
-                      ? ''
-                      : snap.data['university']
-                  : '');
+          // university = TextEditingController(
+          //     text: snap != null
+          //         ? snap.data['university'] == null
+          //             ? ''
+          //             : snap.data['university']
+          //         : '');
+          // university_id = snap != null
+          //     ? snap.data['university'] == null
+          //         ? ''
+          //         : snap.data['university']
+          //     : '';
+          // print(university_id);
+          // university_id =
+          //     "National University of Sciences and Technology (Pakistan)";
           batch = TextEditingController(
               text: snap != null
                   ? snap.data['batch'] == null
@@ -204,6 +228,9 @@ class _AccountSettingsState extends State<AccountSettings> {
 
   @override
   Widget build(BuildContext context) {
+    String university_id = widget.uni_id;
+    String country_id = widget.cou_id;
+    print(university_id);
     return new MaterialApp(
       home: new Scaffold(
         backgroundColor: Colors.white,
@@ -307,20 +334,31 @@ class _AccountSettingsState extends State<AccountSettings> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 40),
-                        child: TextField(
-                          controller: university,
-                          decoration: InputDecoration(),
-                          selectionHeightStyle:
-                              BoxHeightStyle.includeLineSpacingMiddle,
-                          // onSubmitted: (value) {
-                          //   //setState(() {});
-                          // },
-
-                          // onChanged: (value) {
-                          //   print(value);
-                          //   university = value;
-                          // },
+                        child: DropDownField(
+                          onValueChanged: (dynamic value) {
+                            university_id = value;
+                          },
+                          value: university_id,
+                          itemsVisibleInDropdown: 5,
+                          required: false,
+                          hintText: 'Choose a university',
+                          labelText: 'University',
+                          items: univesities,
                         ),
+                        // TextField(
+                        //   controller: university,
+                        //   decoration: InputDecoration(),
+                        //   selectionHeightStyle:
+                        //       BoxHeightStyle.includeLineSpacingMiddle,
+                        // onSubmitted: (value) {
+                        //   //setState(() {});
+                        // },
+
+                        // onChanged: (value) {
+                        //   print(value);
+                        //   university = value;
+                        // },
+                        // ),
                       ))
                     ],
                   ),
@@ -441,17 +479,28 @@ class _AccountSettingsState extends State<AccountSettings> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 54),
-                        child: TextField(
-                          controller: country,
-                          selectionHeightStyle:
-                              BoxHeightStyle.includeLineSpacingMiddle,
-                          onSubmitted: (value) {
-                            //setState(() {});
+                        child: DropDownField(
+                          onValueChanged: (dynamic value) {
+                            country_id = value;
                           },
-                          // onChanged: (value) {
-                          //   country = value;
-                          // },
+                          value: country_id,
+                          itemsVisibleInDropdown: 5,
+                          required: false,
+                          hintText: 'Choose a Country',
+                          labelText: 'Country',
+                          items: countries,
                         ),
+                        // TextField(
+                        //   controller: country,
+                        //   selectionHeightStyle:
+                        //       BoxHeightStyle.includeLineSpacingMiddle,
+                        //   onSubmitted: (value) {
+                        //     //setState(() {});
+                        //   },
+                        //   // onChanged: (value) {
+                        //   //   country = value;
+                        //   // },
+                        // ),
                       ))
                     ],
                   ),
@@ -511,18 +560,23 @@ class _AccountSettingsState extends State<AccountSettings> {
                     print(urls);
                     Api("users").updateDocument({
                       "uname": uname.text,
-                      "university": university.text,
+                      "university": university_id,
                       "batch": batch.text,
                       "program": program.text,
                       "workPlace": workPlace.text,
                       "designation": designation.text,
-                      "country": country.text,
+                      "country": country_id,
                       "city": city.text,
                       'url': urls
-                    }, uid);
+                    }, uid).then((value) {
+                      print("bhen ka lora");
+                      Navigator.of(context).pop();
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Home()));
 
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => BudFriend()));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) => BudFriend()));
+                    });
                   },
                   child: Text(
                     "Submit",

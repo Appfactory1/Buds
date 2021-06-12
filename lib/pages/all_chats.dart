@@ -22,6 +22,9 @@ class AllChats extends StatefulWidget {
 
 class _AllChatsState extends State<AllChats> {
   List list;
+  String last;
+  Timestamp time;
+  String name;
   @override
   initState() {}
 
@@ -47,21 +50,42 @@ class _AllChatsState extends State<AllChats> {
                     list = snapshot.data.documents[index]['usernames'];
                     list.remove(widget.email);
                     list.remove(widget.uname);
+                    name = list[0].toString();
+
+                    last = snapshot.data.documents[index]['msg'] != null
+                        ? snapshot.data.documents[index]['msg']
+                        : "";
+                    time = snapshot.data.documents[index]['time'];
+                    print(time);
                     return GestureDetector(
                       onTap: () {
+                        print(list[0].toString() + " passed");
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Chat(
                                     snapshot.data.documents[index].documentID,
-                                    widget.uid)));
+                                    widget.uid,
+                                    snapshot.data.documents[index]['usernames'],
+                                    widget.email,
+                                    widget.uname,
+                                    snapshot.data.documents[index]['users'])));
                       },
                       child: ListView(shrinkWrap: true, children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(
+                              top: 8.0, left: 8.0, right: 8.0, bottom: 5.0),
                           child: Text(
                             list[0].toString(),
                             style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 12.0, right: 8.0, bottom: 5),
+                          child: Text(
+                            last,
+                            style: TextStyle(fontSize: 15, color: Colors.grey),
                           ),
                         ),
                         Divider(

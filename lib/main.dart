@@ -3,6 +3,7 @@ import 'package:chat_app/pages/account_settings.dart';
 import 'package:chat_app/pages/all_chats.dart';
 import 'package:chat_app/pages/bud_friend.dart';
 import 'package:chat_app/pages/buds.dart';
+import 'package:chat_app/pages/extra.dart';
 import 'package:chat_app/pages/home.dart';
 import 'package:chat_app/pages/interest.dart';
 import 'package:chat_app/pages/login.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: _home());
+    // home: Extra(),
   }
 
   Widget _home() {

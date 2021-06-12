@@ -1,6 +1,7 @@
 import 'package:chat_app/firebase/auth.dart';
 import 'package:chat_app/firebase/firestore.dart';
 import 'package:chat_app/pages/buds.dart';
+import 'package:chat_app/pages/home.dart';
 import 'package:chat_app/pages/login.dart';
 import 'package:chat_app/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -17,39 +18,99 @@ class _InterestState extends State<Interest> {
   List<DropdownMenuItem> animalItems = [
     DropdownMenuItem(
       child: Text(
-        "Movies",
+        "Politics",
       ),
-      value: "Movies",
+      value: "Politics",
     ),
     DropdownMenuItem(
       child: Text(
-        "Sports",
+        "Personal growth",
       ),
-      value: "Sports",
+      value: "Personal growt",
     ),
     DropdownMenuItem(
       child: Text(
-        "Fitness",
+        "Travel",
       ),
-      value: "Fitness",
+      value: "Travel",
     ),
     DropdownMenuItem(
       child: Text(
-        "Party",
+        "Health/Fitness",
       ),
-      value: "Party",
+      value: "Health/Fitness",
     ),
     DropdownMenuItem(
       child: Text(
-        "Music",
+        "Food",
       ),
-      value: "Music",
+      value: "Food",
     ),
     DropdownMenuItem(
       child: Text(
-        "Adult",
+        "Family",
       ),
-      value: "Adult",
+      value: "Family",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Theater",
+      ),
+      value: "Theater",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Dancing",
+      ),
+      value: "Dancing",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Learning",
+      ),
+      value: "Learning",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Art",
+      ),
+      value: "Art",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Photography",
+      ),
+      value: "Photography",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Finding love",
+      ),
+      value: "Finding love",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Friends",
+      ),
+      value: "Friends",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Charitable",
+      ),
+      value: "Charitable",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Outdoor interests",
+      ),
+      value: "Outdoor interests",
+    ),
+    DropdownMenuItem(
+      child: Text(
+        "Work/Career",
+      ),
+      value: "Work/Career",
     ),
   ];
 
@@ -143,7 +204,17 @@ class _InterestState extends State<Interest> {
                       //     context,
                       //     MaterialPageRoute(
                       //         builder: (context) => Buds(null, null)));
-                      Api('users').updateDocument({'interest': interests}, uid);
+                      Api('users').updateDocument(
+                          {'interest': interests}, uid).then((value) {
+                        print("bhen ka lora");
+                        Navigator.of(context).pop();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Home()));
+
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) => BudFriend()));
+                      });
+                      ;
                     },
                     child: Text(
                       "Submit",
