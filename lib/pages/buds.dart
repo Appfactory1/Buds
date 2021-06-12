@@ -522,28 +522,28 @@ class _BudsState extends State<Buds> {
                                         borderRadius:
                                             BorderRadius.circular(60)),
                                     child: Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
+                                      Icons.mail,
+                                      color: Colors.green,
                                       size: 45,
                                     ),
                                   ),
                                 )
                               ],
                             ),
-                            Align(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                  icon: Icon(Icons.settings_outlined),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Extra())); //BudFriend()));
-                                  },
-                                  iconSize: 55,
-                                  color: Colors.grey,
-                                ))
+                            // Align(
+                            //     alignment: Alignment.centerLeft,
+                            //     child: IconButton(
+                            //       icon: Icon(Icons.settings_outlined),
+                            //       onPressed: () {
+                            //         Navigator.push(
+                            //             context,
+                            //             MaterialPageRoute(
+                            //                 builder: (context) =>
+                            //                     Extra())); //BudFriend()));
+                            //       },
+                            //       iconSize: 55,
+                            //       color: Colors.grey,
+                            //     ))
                           ],
                         ),
                       );
@@ -721,28 +721,28 @@ class _BudsState extends State<Buds> {
                                   color: Colors.grey,
                                   borderRadius: BorderRadius.circular(60)),
                               child: Icon(
-                                Icons.favorite,
-                                color: Colors.red,
+                                Icons.mail,
+                                color: Colors.green,
                                 size: 45,
                               ),
                             ),
                           )
                         ],
                       ),
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
-                            icon: Icon(Icons.settings_outlined),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AllChats(
-                                          uid, widget.uemail, widget.uname)));
-                            },
-                            iconSize: 55,
-                            color: Colors.grey,
-                          ))
+                      // Align(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: IconButton(
+                      //       icon: Icon(Icons.settings_outlined),
+                      //       onPressed: () {
+                      //         Navigator.push(
+                      //             context,
+                      //             MaterialPageRoute(
+                      //                 builder: (context) => AllChats(
+                      //                     uid, widget.uemail, widget.uname)));
+                      //       },
+                      //       iconSize: 55,
+                      //       color: Colors.grey,
+                      //     ))
                     ],
                   ),
                 )),

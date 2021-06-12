@@ -6,6 +6,7 @@ import 'package:chat_app/firebase/storage.dart';
 import 'package:chat_app/pages/bud_friend.dart';
 import 'package:chat_app/pages/contriesList.dart';
 import 'package:chat_app/pages/home.dart';
+import 'package:chat_app/pages/occupations.dart';
 import 'package:chat_app/pages/universitiesList.dart';
 import 'package:chat_app/widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,10 +20,12 @@ import 'package:dropdownfield/dropdownfield.dart';
 class AccountSettings extends StatefulWidget {
   String uni_id;
   String cou_id;
+  String occ_id;
 
-  AccountSettings(uni_id, cou_id) {
+  AccountSettings(uni_id, cou_id, occ_id) {
     this.uni_id = uni_id;
     this.cou_id = cou_id;
+    this.occ_id = occ_id;
   }
 
   @override
@@ -51,6 +54,7 @@ class _AccountSettingsState extends State<AccountSettings> {
 
   List<String> univesities = unis;
   List<String> countries = coun;
+  List<String> occupations = occ;
   final TextEditingController _controller = new TextEditingController();
 
   DocumentSnapshot snap;
@@ -230,6 +234,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   Widget build(BuildContext context) {
     String university_id = widget.uni_id;
     String country_id = widget.cou_id;
+    String occupation_id = widget.occ_id;
     print(university_id);
     return new MaterialApp(
       home: new Scaffold(
@@ -425,16 +430,16 @@ class _AccountSettingsState extends State<AccountSettings> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 28),
-                        child: TextField(
-                          controller: workPlace,
-                          selectionHeightStyle:
-                              BoxHeightStyle.includeLineSpacingMiddle,
-                          onSubmitted: (value) {
-                            //setState(() {});
+                        child: DropDownField(
+                          onValueChanged: (dynamic value) {
+                            occupation_id = value;
                           },
-                          // onChanged: (value) {
-                          //   workPlace = value;
-                          // },
+                          value: occupation_id,
+                          itemsVisibleInDropdown: 5,
+                          required: false,
+                          hintText: 'Choose an Occupation',
+                          labelText: 'Occupation',
+                          items: occupations,
                         ),
                       ))
                     ],
@@ -563,7 +568,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                       "university": university_id,
                       "batch": batch.text,
                       "program": program.text,
-                      "workPlace": workPlace.text,
+                      "workPlace": occupation_id,
                       "designation": designation.text,
                       "country": country_id,
                       "city": city.text,

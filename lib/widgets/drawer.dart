@@ -16,6 +16,7 @@ class _MyDrawerState extends State<MyDrawer> {
   String username = '';
   String univesity = '';
   String country = '';
+  String occupation = '';
   String uid;
   @override
   void initState() {
@@ -30,6 +31,8 @@ class _MyDrawerState extends State<MyDrawer> {
           country =
               value1.data['country'] == null ? '' : value1.data['country'];
           username = value1.data['uname'] == null ? '' : value1.data['uname'];
+          occupation =
+              value1.data['workPlace'] == null ? '' : value1.data['workPlace'];
         });
       });
     });
@@ -77,7 +80,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          AccountSettings(univesity, country)));
+                          AccountSettings(univesity, country, occupation)));
             },
           ),
           Divider(

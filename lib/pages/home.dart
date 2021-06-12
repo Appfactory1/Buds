@@ -44,8 +44,10 @@ class _HomeState extends State<Home> {
         print(value.data['uname']);
         if (value.data['uname'] == null || value.data['uname'] == '') {
           print('kuss');
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AccountSettings("", "")));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AccountSettings("", "", "")));
         } else {
           setState(() {
             username = value.data['uname'];
