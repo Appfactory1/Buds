@@ -79,8 +79,8 @@ class _MyDrawerState extends State<MyDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          AccountSettings(univesity, country, occupation)));
+                      builder: (context) => AccountSettings(
+                          univesity, country, occupation, username)));
             },
           ),
           Divider(

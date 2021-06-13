@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AccountSettings("", "", "")));
+                  builder: (context) => AccountSettings("", "", "", "")));
         } else {
           setState(() {
             username = value.data['uname'];

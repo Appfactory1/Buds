@@ -21,11 +21,13 @@ class AccountSettings extends StatefulWidget {
   String uni_id;
   String cou_id;
   String occ_id;
+  String username;
 
-  AccountSettings(uni_id, cou_id, occ_id) {
+  AccountSettings(uni_id, cou_id, occ_id, username) {
     this.uni_id = uni_id;
     this.cou_id = cou_id;
     this.occ_id = occ_id;
+    this.username = username;
   }
 
   @override
@@ -307,20 +309,26 @@ class _AccountSettingsState extends State<AccountSettings> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.only(right: 8.0, left: 37),
-                        child: TextField(
-                          controller: uname,
-                          decoration: InputDecoration(),
-                          selectionHeightStyle:
-                              BoxHeightStyle.includeLineSpacingMiddle,
-                          // onSubmitted: (value) {
-                          //   //setState(() {});
-                          // },
+                        child: widget.username != ""
+                            ? Text(widget.username,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
+                                ))
+                            : TextField(
+                                controller: uname,
+                                decoration: InputDecoration(),
+                                selectionHeightStyle:
+                                    BoxHeightStyle.includeLineSpacingMiddle,
+                                // onSubmitted: (value) {
+                                //   //setState(() {});
+                                // },
 
-                          // onChanged: (value) {
-                          //   print(value);
-                          //   university = value;
-                          // },
-                        ),
+                                // onChanged: (value) {
+                                //   print(value);
+                                //   university = value;
+                                // },
+                              ),
                       ))
                     ],
                   ),
@@ -564,7 +572,8 @@ class _AccountSettingsState extends State<AccountSettings> {
                     }
                     print(urls);
                     Api("users").updateDocument({
-                      "uname": uname.text,
+                      "uname":
+                          widget.username == "" ? uname.text : widget.username,
                       "university": university_id,
                       "batch": batch.text,
                       "program": program.text,
