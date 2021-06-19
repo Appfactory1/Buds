@@ -167,6 +167,7 @@ class _LoginState extends State<Login> {
                 child: Text(
                   "Don't Have an Account ?",
                   style: TextStyle(
+                      decoration: TextDecoration.underline,
                       color: Colors.deepPurple[900],
                       fontSize: height * 20,
                       fontWeight: FontWeight.bold),

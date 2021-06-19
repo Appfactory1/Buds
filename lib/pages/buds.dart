@@ -325,7 +325,12 @@ class _BudsState extends State<Buds> {
                                         })),
                             SizedBox(height: 25),
                             Text(
-                              snapshot.data.documents[index]['email'],
+                              (snapshot.data.documents[index]['uname'] ==
+                                          null ||
+                                      snapshot.data.documents[index]['uname'] ==
+                                          "")
+                                  ? snapshot.data.documents[index]['email']
+                                  : snapshot.data.documents[index]['uname'],
                               style: TextStyle(
                                   color: Colors.grey[600], fontSize: 20),
                             ),
@@ -595,9 +600,10 @@ class _BudsState extends State<Buds> {
                                   })),
                       SizedBox(height: 25),
                       Text(
-                        bud.data.documents[index]['email'] == null
-                            ? ""
-                            : bud.data.documents[index]['email'],
+                        (bud.data.documents[index]['uname'] == null ||
+                                bud.data.documents[index]['uname'] == "")
+                            ? bud.data.documents[index]['email']
+                            : bud.data.documents[index]['uname'],
                         style: TextStyle(color: Colors.grey[600], fontSize: 20),
                       ),
                       Text(

@@ -51,12 +51,16 @@ class _HomeState extends State<Home> {
         } else {
           setState(() {
             username = value.data['uname'];
-            university = value.data['university'];
-            designation = value.data['designation'];
-            loc = value.data['loc'];
-            interests = value.data['interest'];
-            rej = value.data['reject'];
-            liked = value.data['liked'];
+            university = value.data['university'] == null
+                ? ''
+                : value.data['university'];
+            designation =
+                value.data['workPlace'] == null ? "" : value.data['workPlace'];
+            loc = value.data['country'] == null ? "" : value.data['country'];
+            interests =
+                value.data['interest'] == null ? "" : value.data['interest'];
+            rej = value.data['reject'] == null ? [] : value.data['reject'];
+            liked = value.data['liked'] == null ? [] : value.data['liked'];
           });
         }
         print(username);
@@ -108,7 +112,7 @@ class _HomeState extends State<Home> {
                             BudCat(
                                 name: "Native Buds",
                                 uname: username,
-                                field: "loc",
+                                field: "country",
                                 value: loc,
                                 rej: rej,
                                 liked: liked,
@@ -116,7 +120,7 @@ class _HomeState extends State<Home> {
                             BudCat(
                                 name: "Professional Buds",
                                 uname: username,
-                                field: "designation",
+                                field: "workPlace",
                                 value: designation,
                                 rej: rej,
                                 liked: liked,
