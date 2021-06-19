@@ -47,6 +47,10 @@ class _BudsState extends State<Buds> {
   List liked = [];
   String uid;
   String uemail;
+  String snapuname;
+  String snapemail;
+  String snapuid;
+  List snapliked;
 
   void initState() {
     print(widget.uname);
@@ -139,6 +143,16 @@ class _BudsState extends State<Buds> {
         // });
         // });
       });
+      Api('users').getDataCollection().then((value) => {
+            snapuname = value.documents[widget.index]['uname'],
+            snapemail = value.documents[widget.index]['email'],
+            snapuid = value.documents[widget.index]['uid'],
+            snapliked = value.documents[widget.index]['liked'],
+            print(snapemail),
+            print(snapuname),
+            print(snapuid),
+            print(snapliked)
+          });
       // if (true) { if (widget.bud.data.documents.length > widget.index + 1) {
       //     Future(() {
       //       Navigator.push(
@@ -255,11 +269,79 @@ class _BudsState extends State<Buds> {
               IconButton(
                 icon: Icon(Icons.mail),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              AllChats(uid, widget.uemail, widget.uname)));
+                  if (bud != null) {
+                    if ((!liked.contains(bud.data.documents[index]['email'])) &&
+                        uid != bud.data.documents[index]['uid'] &&
+                        (bud.data.documents[index]['liked'] == null ||
+                            !bud.data.documents[index]['liked']
+                                .contains(widget.uemail))) {
+                      print("1");
+                      Api("chats").addDocument({
+                        "users": [uid, bud.data.documents[index]['uid']],
+                        "usernames": [
+                          (bud.data.documents[index]['uname'] == null ||
+                                  bud.data.documents[index]['uname'] == "")
+                              ? bud.data.documents[index]['email']
+                              : bud.data.documents[index]['uname'],
+                          widget.uname
+                        ],
+                        "time": DateTime.now()
+                      });
+                      // });
+                      liked.add(bud.data.documents[index]['email']);
+                      Api('users').updateDocument({'liked': liked}, uid);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AllChats(uid, widget.uemail, widget.uname)));
+                    } else {
+                      print("2");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AllChats(uid, widget.uemail, widget.uname)));
+                    }
+                  } else {
+                    if ((!liked.contains(snapemail)) &&
+                        uid != snapuid &&
+                        (snapliked == null ||
+                            !snapliked.contains(widget.uemail))) {
+                      print('entering');
+                      Api("chats").addDocument({
+                        "users": [uid, snapuid],
+                        "usernames": [
+                          (snapuname == null || snapuname == "")
+                              ? snapemail
+                              : snapuname,
+                          widget.uname
+                        ],
+                        "time": DateTime.now()
+                      });
+                      // });
+                      liked.add(snapemail);
+                      print("1");
+                      Api('users').updateDocument({'liked': liked}, uid);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AllChats(uid, widget.uemail, widget.uname)));
+                    } else {
+                      print("4");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AllChats(uid, widget.uemail, widget.uname)));
+                    }
+                  }
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             AllChats(uid, widget.uemail, widget.uname)));
                 },
                 iconSize: 40,
               )
@@ -677,7 +759,7 @@ class _BudsState extends State<Buds> {
                                       bud.data.documents[index]['email'])) &&
                                   uid != bud.data.documents[index]['uid'] &&
                                   (bud.data.documents[index]['liked'] == null ||
-                                      bud.data.documents[index]['liked']
+                                      !bud.data.documents[index]['liked']
                                           .contains(widget.uemail))) {
                                 Api("chats").addDocument({
                                   "users": [

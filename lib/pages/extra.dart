@@ -1,6 +1,7 @@
 import 'package:chat_app/pages/universitiesList.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdownfield/dropdownfield.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class Extra extends StatefulWidget {
   @override
@@ -8,6 +9,24 @@ class Extra extends StatefulWidget {
 }
 
 class _ExtraState extends State<Extra> {
+  final colorizeColors = [
+    Colors.purple,
+    Colors.purple.shade100,
+    Colors.purple.shade200,
+    Colors.purple.shade300,
+    Colors.purple.shade400,
+    Colors.purple.shade500,
+    Colors.purple.shade600,
+    Colors.purple.shade700,
+    Colors.purple.shade800,
+    Colors.purple.shade900,
+  ];
+  final colorizeTextStyle = TextStyle(
+    fontSize: 30.0,
+    fontFamily: 'Horizon',
+    fontWeight: FontWeight.bold,
+  );
+
   @override
   Widget build(BuildContext context) {
     String country_id;
@@ -16,32 +35,29 @@ class _ExtraState extends State<Extra> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Dropdown Form"),
+        title: Text("Animation"),
       ),
       body: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              DropDownField(
-                onValueChanged: (dynamic value) {
-                  country_id = value;
-                },
-                value: country_id,
-                itemsVisibleInDropdown: 10,
-                required: false,
-                hintText: 'Choose a country',
-                labelText: 'Country',
-                items: countries,
+          padding: EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              const Text(
+                'Welcome to ',
+                style: TextStyle(
+                  fontSize: 30.0,
+                  fontFamily: 'Horizon',
+                ),
               ),
-              FlatButton(
-                  color: Colors.red,
-                  onPressed: () {
-                    print(country_id);
-                  },
-                  child: Text("something"))
-            ]),
-      ),
+              AnimatedTextKit(animatedTexts: [
+                ColorizeAnimatedText(
+                  'Buds',
+                  textStyle: colorizeTextStyle,
+                  colors: colorizeColors,
+                  speed: Duration(milliseconds: 200),
+                ),
+              ]),
+            ],
+          )),
     );
   }
 }

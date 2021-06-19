@@ -4,6 +4,7 @@ import 'package:chat_app/pages/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 import 'login.dart';
 
@@ -13,6 +14,23 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final colorizeColors = [
+    Colors.purple,
+    Colors.purple.shade100,
+    Colors.purple.shade200,
+    Colors.purple.shade300,
+    Colors.purple.shade400,
+    Colors.purple.shade500,
+    Colors.purple.shade600,
+    Colors.purple.shade700,
+    Colors.purple.shade800,
+    Colors.purple.shade900,
+  ];
+  final colorizeTextStyle = TextStyle(
+    fontSize: 30.0,
+    fontFamily: 'Horizon',
+    fontWeight: FontWeight.bold,
+  );
   String email = "";
   String password = "";
   bool visible = true;
@@ -34,10 +52,23 @@ class _SignUpState extends State<SignUp> {
           children: [
             SizedBox(height: height * 35),
             Center(
-                child: Text(
-              "Welcome To Buds",
-              style: TextStyle(color: Colors.grey, fontSize: height * 30),
-            )),
+                child: Column(children: [
+              Text(
+                'Welcome to ',
+                style: TextStyle(
+                  fontSize: height * 30.0,
+                  fontFamily: 'Horizon',
+                ),
+              ),
+              AnimatedTextKit(animatedTexts: [
+                ColorizeAnimatedText(
+                  'Buds',
+                  textStyle: colorizeTextStyle,
+                  colors: colorizeColors,
+                  speed: Duration(milliseconds: 200),
+                ),
+              ])
+            ])),
             //SizedBox(height: 280),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: (45.0 * width)),
