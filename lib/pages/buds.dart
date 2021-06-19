@@ -335,11 +335,10 @@ class _BudsState extends State<Buds> {
                                   color: Colors.grey[600], fontSize: 20),
                             ),
                             Text(
-                              snapshot.data.documents[index]['designation'] ==
+                              snapshot.data.documents[index]['workPlace'] ==
                                       null
                                   ? ''
-                                  : snapshot.data.documents[index]
-                                      ['designation'],
+                                  : snapshot.data.documents[index]['workPlace'],
                               style: TextStyle(
                                   color: Colors.grey[600], fontSize: 20),
                             ),
@@ -467,7 +466,8 @@ class _BudsState extends State<Buds> {
                                         uid !=
                                             snapshot.data.documents[index]
                                                 ['uid'] &&
-                                        (bud.data.documents[index]['liked'] ==
+                                        (snapshot.data.documents[index]
+                                                    ['liked'] ==
                                                 null ||
                                             !snapshot
                                                 .data.documents[index]['liked']
@@ -607,9 +607,9 @@ class _BudsState extends State<Buds> {
                         style: TextStyle(color: Colors.grey[600], fontSize: 20),
                       ),
                       Text(
-                        bud.data.documents[index]['designation'] == null
+                        bud.data.documents[index]['workPlace'] == null
                             ? ""
-                            : bud.data.documents[index]['designation'],
+                            : bud.data.documents[index]['workPlace'],
                         style: TextStyle(color: Colors.grey[600], fontSize: 20),
                       ),
                       SizedBox(

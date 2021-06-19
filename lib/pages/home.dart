@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
                 value.data['workPlace'] == null ? "" : value.data['workPlace'];
             loc = value.data['country'] == null ? "" : value.data['country'];
             interests =
-                value.data['interest'] == null ? "" : value.data['interest'];
+                value.data['interest'] == null ? [] : value.data['interest'];
             rej = value.data['reject'] == null ? [] : value.data['reject'];
             liked = value.data['liked'] == null ? [] : value.data['liked'];
           });
