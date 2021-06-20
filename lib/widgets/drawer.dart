@@ -75,12 +75,14 @@ class _MyDrawerState extends State<MyDrawer> {
           ListTile(
             title: Text("Account Settings"),
             onTap: () {
-              Navigator.of(context).pop();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AccountSettings(
-                          univesity, country, occupation, username)));
+              if (!(username == "" && email == "")) {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AccountSettings(
+                            univesity, country, occupation, username)));
+              }
             },
           ),
           Divider(
@@ -90,7 +92,7 @@ class _MyDrawerState extends State<MyDrawer> {
           ListTile(
             title: Text("Chats"),
             onTap: () {
-              if (!(username == "" && email == "")) {
+              if (!(email == "")) {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
