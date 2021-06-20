@@ -75,7 +75,7 @@ class _MyDrawerState extends State<MyDrawer> {
           ListTile(
             title: Text("Account Settings"),
             onTap: () {
-              if (!(username == "" && email == "")) {
+              if (!(email == "")) {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
@@ -92,7 +92,7 @@ class _MyDrawerState extends State<MyDrawer> {
           ListTile(
             title: Text("Chats"),
             onTap: () {
-              if (!(email == "")) {
+              if (!(username == "" && email == "")) {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
