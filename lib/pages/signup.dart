@@ -183,9 +183,13 @@ class _SignUpState extends State<SignUp> {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                             content: Text(
                                 'Account has been setup, verify your email before logging in')));
+                        print('2');
+                        Api("users").addDocumentById(
+                            {"email": email, "uid": user.uid}, user.uid);
                       }
                       print('2');
-                      Api("users").addDocumentById({"email": email}, user.uid);
+                      Api("users").addDocumentById(
+                          {"email": email, "uid": user.uid}, user.uid);
                       print("3");
 
                       Navigator.push(context,
