@@ -380,6 +380,14 @@ class _BudsState extends State<Buds> {
                                                 BorderRadius.circular(25)),
                                         height: 400,
                                         width: double.infinity,
+                                        child: Center(
+                                          child: Text(
+                                            "No Photos",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20),
+                                          ),
+                                        ),
                                       )
                                     : PageView.builder(
                                         itemCount: snapshot.data

@@ -45,6 +45,9 @@ class _AllChatsState extends State<AllChats> {
             builder: (context, snapshot) {
               if (snapshot.data != null) {
                 return ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  physics: BouncingScrollPhysics(),
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     list = snapshot.data.documents[index]['usernames'];

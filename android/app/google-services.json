@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "669985416884",
-    "firebase_url": "https://buds-e3baf.firebaseio.com",
-    "project_id": "buds-e3baf",
-    "storage_bucket": "buds-e3baf.appspot.com"
+    "project_number": "984867842777",
+    "project_id": "buds-9849d",
+    "storage_bucket": "buds-9849d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:669985416884:android:b6d5a31a5da0ea4320d9e1",
+        "mobilesdk_app_id": "1:984867842777:android:1dca638a9d8d85cd6aecc8",
         "android_client_info": {
           "package_name": "com.example.chat_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "669985416884-pjlmj68qcc9ihr7h55lic27c58aoorri.apps.googleusercontent.com",
+          "client_id": "984867842777-1rrq21fvjmtkfo7uc538ehvaj7auqr7h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFGnZDFThWkkCtKoROkNzOlGgikkd-uOM"
+          "current_key": "AIzaSyBxtCAkMiSHL62DowA1iCb9XYGkvHWR4pg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "669985416884-pjlmj68qcc9ihr7h55lic27c58aoorri.apps.googleusercontent.com",
+              "client_id": "984867842777-1rrq21fvjmtkfo7uc538ehvaj7auqr7h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
